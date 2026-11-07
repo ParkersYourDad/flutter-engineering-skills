@@ -127,7 +127,7 @@ The Flutter app must never call Gemini directly with a secret API key. Do not pu
 ### Secret setup
 
 - Use a named Supabase Edge Function secret such as `GEMINI_API_KEY`. Read it at runtime inside the function using the current documented Edge Runtime environment API (currently `Deno.env.get`).
-- Set production secrets through the Supabase Dashboard's Edge Function Secrets or the current documented CLI secret command. Never put secret values in migration SQL, `config.toml`, source code, README, GitHub Actions YAML, or command logs.
+- Set production secrets through the Supabase Dashboard's Edge Function Secrets or the current documented CLI secret command. Never put secret values in migration SQL, `config.toml`, source code, README, GitHub Actions YAML, or command logs. Use separate Gemini API keys for development and production where practical, restrict each key to the Gemini API and intended project when Google's current key controls support it, and configure provider-side usage/billing alerts.
 - For local development, use the documented Edge Function local secret file (currently `supabase/functions/.env`) and add it to `.gitignore`. Commit only a placeholder `.env.example` with variable names and fake/example values, never a real key.
 - Missing key must fail closed with a server-side configuration error. Do not fall back to a key supplied by the client.
 - Rotate a key immediately if exposure is suspected; inspect provider usage/billing, revoke the old key, deploy the replacement, and review logs/history for further leakage.
