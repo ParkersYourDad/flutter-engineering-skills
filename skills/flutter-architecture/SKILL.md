@@ -8,9 +8,9 @@ description: Owns Flutter/Dart application architecture, module boundaries, stat
 ## Shared standards
 
 Use these repository-level documents as the single source of truth. Do not copy their checklists into this skill or create conflicting local variants:
-- [architecture.md] (../../references/architecture.md)
-- [workflow.md] (../../references/workflow.md)
-- [quality.md] (../../references/quality.md)
+- [architecture.md](../../references/architecture.md)
+- [workflow.md](../../references/workflow.md)
+- [quality.md](../../references/quality.md)
 
 ## Mission
 
