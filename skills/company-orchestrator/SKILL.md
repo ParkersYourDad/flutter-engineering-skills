@@ -62,6 +62,7 @@ Inspect repository state, architecture, dependencies, tests, design system, back
 Create only the artifacts needed for the task:
 - Requirements and measurable acceptance criteria.
 - UX flow and screen/state inventory when UI changes.
+- A completed `references/design-system-component-contract.md` for components intended for cross-feature/app reuse; omit it for screen-local widgets.
 - Architecture decision and dependency/data-flow contracts when system boundaries change.
 - API/database/event contracts before parallel client/backend work.
 - Test, security, accessibility, and performance scope based on risk.
@@ -70,7 +71,7 @@ Assign one accountable owner per deliverable. Parallelize only when interfaces a
 
 ### 4. Design and architecture before implementation
 
-For user-facing work, design the flow and interaction states before coding. For structural work, agree on ownership, dependencies, API contracts, migration strategy, and failure behavior. Security, accessibility, localization, and performance specialists review early enough to influence the design.
+For user-facing work, design the flow and interaction states before coding. For reusable design-system components, agree on semantic API, state model, token dependencies, platform behavior, accessibility, motion, and verification evidence using `references/design-system-component-contract.md` before implementation. Do not impose this artifact on screen-local widgets. For structural work, agree on ownership, dependencies, API contracts, migration strategy, and failure behavior. Security, accessibility, localization, and performance specialists review early enough to influence the design.
 
 ### 5. Implementation
 
