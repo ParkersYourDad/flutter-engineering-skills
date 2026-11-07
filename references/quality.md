@@ -73,7 +73,7 @@ Baseline: OWASP MASVS (and MASTG for test technique). This is not legal/complian
 - [M] No secrets or signing material in source control; do not assume client binaries can protect secrets.
 - [M] Supabase publishable key may be embedded in a client only because it is designed to be public; it grants no data access without correct grants and RLS. Never embed secret/service-role keys.
 - [M] Gemini API key exists only in Supabase Edge Function secrets (e.g. `GEMINI_API_KEY`) and is read at runtime; never use `--dart-define`, `.env` bundled into Flutter, Remote Config, or obfuscation as a secret store.
-- [M] Tokens only in secure storage; clear on sign-out; no sensitive data in prefs, logs, crash reports, or task-switcher screenshots where relevant (consider `FLAG_SECURE`/blur on sensitive screens).
+- [M] Supabase session tokens remain under the Supabase SDK's supported session persistence; do not copy them into app preferences or custom stores. App-owned credentials, if any, use secure storage. Clear user-scoped data on sign-out; no sensitive data in prefs, logs, crash reports, or task-switcher screenshots where relevant (consider `FLAG_SECURE`/blur on sensitive screens).
 - [M] HTTPS only; no cleartext (`usesCleartextTraffic` off outside dev; iOS ATS not weakened); no permissive `badCertificateCallback`.
 - [M] Validate/sanitize external input (forms, deep-link params, server data); treat deep links/intents as untrusted.
 - [M] Logs redact tokens/PII; verbose logs are debug-only.
