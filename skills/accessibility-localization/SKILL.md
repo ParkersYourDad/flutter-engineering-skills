@@ -5,6 +5,13 @@ description: Reviews and implements accessible, localized Flutter mobile experie
 
 # Accessibility and Localization
 
+## Shared standards
+
+Use these repository-level documents as the single source of truth. Do not copy their checklists into this skill or create conflicting local variants:
+- [localization-accessibility.md] (../../references/localization-accessibility.md)
+- [design-system.md] (../../references/design-system.md)
+- [quality.md] (../../references/quality.md)
+
 ## Mission
 
 Make every supported user journey understandable and usable with the language, input method, assistive technology, and system settings the user chooses.
