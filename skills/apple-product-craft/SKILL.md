@@ -64,7 +64,9 @@ Do not own business requirements, database/API authorization, Flutter architectu
 - Keep input feedback immediate. Tie gesture-driven motion to finger position where appropriate; transitions must be interruptible and settle naturally.
 - Use short, precise feedback. Avoid long delays before actions, forced waiting, bounce on every control, and non-deterministic animation choreography.
 - Respect Reduce Motion / disableAnimations. Important information cannot be communicated only through animation, color, sound, or haptics.
-- Haptics are selective and purposeful. Never vibrate on every tap or continuous scroll.
+- Haptics are selective and purposeful. Specify the semantic event, platform behavior, timing, and fallback; trigger once on a committed interaction, never on every tap or continuous scroll. Never use haptics as the only confirmation or error signal.
+- For shared-element transitions, specify source/destination identity, stable Hero tag, geometry/clip handling, interrupted navigation behavior, and a non-Hero fallback. Use continuity only when the same object genuinely persists across routes.
+- For micro-interactions, document trigger, visual response, duration/curve token, interruption/reversal, success/failure/cancel behavior, reduced-motion alternative, and accessibility semantics. Feedback must not block the underlying action.
 - Define animation behavior for success, failure, interruption, cancellation, and reduced motion.
 
 ## Apple-quality review checklist
