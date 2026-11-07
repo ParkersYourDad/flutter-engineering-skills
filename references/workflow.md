@@ -32,9 +32,9 @@ Cross-cutting acceptance criteria every project inherits: gates in `quality.md`,
 
 Create under `docs/` at project start; keep short; never duplicate content between them or into code comments.
 
-1. **`PROJECT.md`:** product summary, fixed constraints, supported OS versions, folder map, links to code-level conventions, current status. Starts from stack in `SKILL.md`; link to rules rather than restating them.
+1. **`PROJECT.md`:** product summary, fixed constraints, supported OS versions, folder map, links to code-level conventions, current status, Supabase project/environment identifiers (never secret values), enabled services, migration/deployment status, and Edge Function inventory.
 2. **`REQUIREMENTS.md`:** scope, out-of-scope, and traceability/acceptance table, including backend data access, RLS, retention, and AI usage requirements when applicable.
-3. **`DECISIONS.md`:** dated one-paragraph ADRs (context, decision, consequences) for long-term-cost choices: dependencies, storage, auth, architecture deviations. Includes an Assumptions section; remove assumptions as confirmed.
+3. **`DECISIONS.md`:** dated one-paragraph ADRs (context, decision, consequences) for long-term-cost choices: dependencies, Supabase service choices, data ownership/RLS model, Gemini data handling and cost controls, storage, auth, architecture deviations. Includes an Assumptions section; remove assumptions as confirmed.
 4. **`ISSUES.md`:** known issues with ID, impact, workaround, status. Delete entries when fixed (regression test is permanent record).
 
 README holds setup, run, and release commands only.
