@@ -35,6 +35,15 @@ Visual direction, changing product requirements, broad refactors without evidenc
 - Measure payload sizes, request counts, latency, retries, cancellation, cache hit/miss, and slow-network behavior.
 - Monitor energy/background work only when the app uses polling, location, media, frequent sync, or realtime streams.
 
+## Diagnostic workflow
+
+1. Start with the Flutter DevTools Performance view: inspect the Flutter frames chart, select slow frames, and read Frame analysis and Timeline events. Enable widget-build, layout, or paint tracing only when the initial trace does not explain the issue; enhanced tracing can itself affect timings.
+2. If UI-thread work is slow, use the CPU Profiler and timeline to locate expensive Dart work, synchronous parsing, build/layout work, allocations, or repeated work. Move work to another isolate only when CPU profiling shows a real UI-isolate bottleneck and the work can be transferred safely.
+3. If raster work is slow, inspect paint complexity, clipping, opacity, shadows, filters, image sizes, and shader compilation. Do not assume a raster delay is fixed by reducing Riverpod rebuilds.
+4. If the delay appears outside the UI/raster traces, investigate plugin/native work on the platform thread with Android Studio, Xcode Instruments, or Perfetto as appropriate. The Flutter performance overlay does not display platform-thread timing.
+5. Separate first-use behavior from warmed-up behavior. Inspect shader-compilation frames where present and validate renderer behavior on the actual supported device/OS/Flutter combination. Do not disable or force a renderer based on a generic rule.
+6. For frame-level instrumentation, use `FrameTiming` (`buildDuration`, `rasterDuration`, `totalSpan`) when it answers the question. Interpret UI and raster timings as pipelined work; do not sum them blindly.
+
 ## Optimization sequence
 
 1. Reproduce the issue under a controlled scenario.
