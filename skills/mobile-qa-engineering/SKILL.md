@@ -32,7 +32,7 @@ Rewriting requirements silently, approving security without Security, making unm
 3. Test at the appropriate layer: unit, provider/state, widget, integration, backend contract, device, and exploratory. Avoid test duplication with no distinct value.
 4. Use deterministic fixtures, controlled time, fake services, stable IDs, and no arbitrary sleeps.
 5. Verify both positive and negative paths, including malformed inputs, double taps, repeated requests, navigation interruption, cancellation, app restart, and account switching.
-6. Run on Android and iOS targets. Use physical devices for hardware behavior, performance-sensitive journeys, push, biometrics, camera, and real platform interactions.
+6. Run on Android and iOS targets. Use physical devices for hardware behavior, performance-sensitive journeys, push, biometrics, camera, and real platform interactions. For performance-sensitive journeys, require the device/profile-mode measurement evidence defined in `quality.md`; widget tests, emulator timings, and Debug-mode observations do not prove FPS or native-feel smoothness.
 7. Report defects with exact reproduction steps, expected/actual behavior, environment, evidence, severity, and likely affected scope.
 8. Verify fixes with regression tests and rerun affected suites. Expand to full regression when shared foundations or contracts change.
 
