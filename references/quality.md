@@ -9,6 +9,7 @@
 - Android and iOS
 - CI/CD
 - Device matrix
+- Production operations and reliability
 - Gates
 
 ## Verification commands
@@ -242,7 +243,7 @@ A gate passes only when each applicable item is observed, not assumed.
 - [M] Secrets scan, log-redaction checks, dependency review, and release-artifact review show no exposed credentials or sensitive payloads.
 - [M] Applicable Supabase grants/RLS, Edge Function auth/abuse controls, and Storage permissions pass backend tests.
 - [M] Android/iOS manifests, permissions, exported surfaces, backup behavior, privacy declarations, and included SDK requirements are reviewed for the actual release build.
-- [M] Selected OWASP MASVS risk profile is addressed or deviations are recorded with owner and reason; no certification claim is made.
+- [M] Selected OWASP MASVS profile covers the mobile client and applicable OWASP ASVS/API Security controls cover backend/API surfaces; scope and deviations are recorded with owner and reason. No certification claim is made.
 
 ### Performance Gate
 
@@ -250,6 +251,14 @@ A gate passes only when each applicable item is observed, not assumed.
 - [M] Profile-mode measurements on the lowest supported physical device are recorded; higher-refresh targets are tested where relevant.
 - [M] Frame jank/UI/raster timing, cold/warm startup, memory behavior, and release artifact size are measured; energy/background behavior is measured when the product uses ongoing background work.
 - [M] Results are compared with the previous baseline. Regressions beyond the approved budget are fixed or explicitly accepted and recorded; unmeasured performance is marked Not verified.
+
+### Production Operations Gate
+
+- [M] Production-critical journeys have owned SLIs/SLOs, alert thresholds, and a documented response owner.
+- [M] Crash/ANR and backend telemetry are usable, correlated where possible, privacy-reviewed, and tested for redaction.
+- [M] Incident severity, escalation, user communication, and recovery runbooks exist for the highest-impact failure modes.
+- [M] RTO/RPO are defined for important data/services; backup restoration has been exercised and recorded.
+- [M] Mobile release stop/hold/forward-fix path and app/backend compatibility window are defined; applicable migrations have a safe recovery plan.
 
 ### Application Gate
 
