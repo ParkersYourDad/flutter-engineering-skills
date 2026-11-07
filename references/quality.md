@@ -36,11 +36,11 @@ Check current flag names with `flutter build --help` before relying on them.
 Every maintained Flutter app must commit an explicit `analysis_options.yaml`; do not rely on whichever defaults happen to ship with the current SDK or a transitive lint package. Enable Dart's sound static-analysis modes:
 
 ```yaml
- analyzer:
-   language:
-     strict-casts: true
-     strict-inference: true
-     strict-raw-types: true
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
  ```
 
 Keep the project's selected lint rules in the same file (or a deliberately included, pinned lint package). Do not silence diagnostics globally, add broad exclusions, or use file-level ignores without a narrow explanation and a follow-up condition. Prefer fixing the underlying type/API issue. When an ignore is unavoidable, scope it to the smallest line/block and explain why.
