@@ -23,6 +23,7 @@ Do not begin implementation when a missing requirement could change data ownersh
 |---|---|---|
 | Product discovery | Problem validation, users, outcomes, requirements | Architecture or implementation decisions |
 | Product orchestrator | Work routing, dependency order, scope, conflict resolution, final readiness | Quietly overriding a domain specialist's evidence |
+| Mobile design research | Evidence from real screens/flows, category patterns, reference synthesis | Copying competitor UI, product strategy, implementation approval |
 | Apple product craft | UX/UI quality, interaction design, visual system, platform fit | Product requirements, backend authorization |
 | Architecture | Boundaries, contracts, data flow, technical decisions | Feature implementation or independent approval |
 | Flutter engineering | Dart/Flutter implementation and maintainability | Approving its own critical security or release gates |
