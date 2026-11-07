@@ -8,8 +8,8 @@ description: Orchestrates end-to-end digital product work across product discove
 ## Shared standards
 
 Use these repository-level documents as the single source of truth. Do not copy their checklists into this skill or create conflicting local variants:
-- [team-operating-model.md] (../../references/team-operating-model.md)
-- [quality.md] (../../references/quality.md)
+- [team-operating-model.md](../../references/team-operating-model.md)
+- [quality.md](../../references/quality.md)
 - [SKILL.md] (../../SKILL.md)
 
 ## Mission
