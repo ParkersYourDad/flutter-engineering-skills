@@ -94,7 +94,13 @@ Apply `backend-supabase.md` to every backend feature. The following are release-
 
 ## Security and privacy
 
-Baseline: use the current OWASP MASVS control groups and relevant MASTG testing guidance. Select a risk-appropriate verification profile for the app; this is an engineering baseline, not a claim of OWASP certification or legal compliance. Review privacy, payments, children’s data, health, and regulated-data requirements with qualified specialists where applicable.
+Use separate security baselines for each trust boundary:
+
+- **Flutter mobile clients:** current OWASP MASVS control groups and MASTG test guidance. Choose a risk-appropriate MAS profile; MASVS is a client-side standard and does not verify the remote API/backend by itself.
+- **Backend and web/API services:** OWASP ASVS 5.0.0 (or the latest stable version verified at task time) for application/service controls, plus the OWASP API Security Top 10 for API-specific threat coverage. Apply the controls relevant to the actual API architecture; Supabase RLS checks are necessary but do not replace API/service security verification.
+- **Organization-wide secure development:** use NIST SSDF and OWASP SAMM as process-improvement references where organizational maturity is in scope; do not claim certification or blanket compliance merely because a checklist exists.
+
+Select risk-appropriate verification depth for each product. This is an engineering baseline, not a claim of OWASP certification or legal compliance. Review privacy, payments, children’s data, health, and regulated-data requirements with qualified specialists where applicable.
 
 ### Threat model and data handling
 
@@ -172,6 +178,37 @@ GitHub Actions should make routine checks repeatable without giving every workfl
 
 Maintain a short table in `docs/PROJECT.md`: lowest + current Android and iOS versions, small/regular/large phone, tablet/foldable if supported, light/dark, `en`/`ar`, text scale 1.0/2.0, gesture vs button navigation, offline/flaky network, low-memory. Use emulators/simulators for repeatability, physical devices for performance, haptics, notifications, biometrics, camera/permissions. Every release report states which rows were tested and which were not.
 
+## Production operations and reliability
+
+Apply this section to production apps and services; mark genuinely unused capabilities N/A with a reason. Production readiness is not complete at "the build passed".
+
+### Service objectives and observability
+
+- [M] Identify critical user journeys and their service dependencies. Define a small set of measurable SLIs and product-specific SLOs for availability, successful completion, latency, and data freshness where relevant. Define the measurement window and exclusions; do not invent a universal uptime target.
+- [M] Define alert thresholds and an accountable owner for each critical SLO. Use error budgets to inform release risk only when a meaningful SLO exists; do not turn metrics into vanity dashboards or individual performance scores.
+- [M] Mobile observability: monitor crash-free users/sessions and Android ANRs, startup and key journey failures, app version/OS/device distribution, and safe request failure categories. Choose analytics and crash-reporting SDKs only after privacy, license, data transfer, and retention review.
+- [M] Backend observability: structured logs, metrics, and traces for critical services; correlate requests with a generated request/trace ID across client, Edge Function, and provider where supported. Never put access tokens, raw prompts, sensitive payloads, or personal data into telemetry by default.
+- [M] Verify telemetry itself: events are emitted once, properties have stable types/names, timestamps and identity are correct, failures are visible, and consent/opt-out controls are respected. Do not treat analytics events as the authoritative source for financial or security-critical records.
+
+### Incident response and recovery
+
+- [M] Every production service has an owner, severity definitions, an escalation/contact path, and a short runbook for the most likely high-impact failures (outage, auth failure, data exposure, quota/cost spike, bad release, migration failure).
+- [M] Incident workflow: detect → assess/severity → contain → communicate → recover → verify → document lessons. Security/privacy incidents also follow the applicable legal and contractual notification process; do not improvise breach notification advice.
+- [M] Define service-specific recovery objectives (RTO/RPO) from business impact. Configure backups accordingly and perform a restore/recovery drill; backup existence or a green dashboard is not proof that restore works.
+- [M] After significant incidents, write a blameless post-incident review with impact, timeline, root/contributing causes, detection gaps, corrective actions, owners, and due dates. Track actions to closure; do not stop at "add more tests".
+
+### Safe deployment and compatibility
+
+- [M] Mobile releases are difficult to roll back after users install them. Use staged rollout where available, monitor release health, and define a stop/hold/rollback-or-forward-fix decision path before release.
+- [M] Keep backend APIs and database migrations compatible with supported app versions. Prefer expand → migrate clients/data → contract; do not remove fields/endpoints or tighten constraints while older installed clients may still call them.
+- [M] Destructive or irreversible migrations require an explicit backup/recovery plan and authorization. Test both fresh-install and upgrade paths; document forward-fix steps if SQL rollback is unsafe.
+- [C] Use feature flags or server-side kill switches for high-risk features and provider integrations. Flags must not replace authorization, and client-only flags must never protect privileged operations.
+- [M] Define how users on old app versions are handled (minimum supported version, graceful upgrade message, API compatibility window, and emergency disable behavior) without assuming forced update is available or appropriate.
+
+### Delivery health
+
+- [R] For teams that deliver continuously, review DORA's five software delivery metrics at the service/team level: change lead time, deployment frequency, failed-deployment recovery time, change fail rate, and deployment rework rate. Interpret them together and in context; do not optimize one metric or compare individuals/teams without accounting for service risk and workload.
+
 ## Gates
 
 A gate passes only when each applicable item is observed, not assumed.
@@ -234,6 +271,12 @@ Critical failures block completion. Unresolved high-risk items must be listed in
 
 ## Official references
 
+- OWASP MASVS: https://mas.owasp.org/MASVS/
+- OWASP ASVS 5.0: https://asvs.owasp.org/
+- OWASP API Security Project: https://owasp.org/www-project-api-security/
+- OWASP SAMM: https://owaspsamm.org/model/
+- NIST Secure Software Development Framework: https://csrc.nist.gov/projects/ssdf
+- DORA software delivery metrics: https://dora.dev/guides/dora-metrics/
 - Flutter performance best practices: https://docs.flutter.dev/perf/best-practices
 - Flutter performance profiling: https://docs.flutter.dev/perf/ui-performance
 - Flutter DevTools Performance view: https://docs.flutter.dev/tools/devtools/performance
