@@ -42,8 +42,9 @@ Product legal advice, accepting business risk, implementing unrelated features, 
 5. Inspect SQL grants/RLS, views, functions, SECURITY DEFINER, Edge Function auth, Storage policies, Realtime channels, and API rate limits.
 6. Scan secrets and sensitive artifacts, including Git history and release outputs. A discovered credential is compromised: revoke/rotate, investigate use, remove exposure, and review history/artifacts.
 7. Review dependency advisories, platform declarations, SDK data practices, privacy manifests, and required permission rationales.
-8. Test negative paths and abuse controls in an isolated authorized environment. Never probe third-party or production systems without explicit authorization and a safe test plan.
-9. Report findings with severity, affected asset, exploit preconditions, evidence, impact, remediation, and retest status.
+8. Review analytics, crash reporting, logging, tracing, and support SDKs as data processors: inspect automatic collection, identifiers, event/property allowlists, payload capture, SDK network destinations, regional transfers, retention/deletion, consent/opt-out, and account-switch behavior. Test redaction using sentinel secrets and personal data; verify no debug-only diagnostics leak into release builds.
+9. Test negative paths and abuse controls in an isolated authorized environment. Never probe third-party or production systems without explicit authorization and a safe test plan.
+10. Report findings with severity, affected asset, exploit preconditions, evidence, impact, remediation, and retest status.
 
 ## Severity and release blocking
 
@@ -51,7 +52,7 @@ Critical findings include active secret exposure, unauthenticated access to sens
 
 ## Pitfalls
 
-Relying on client-side guards, hiding UI controls, obfuscation, publishable keys, device biometrics, root detection, or CORS as authorization; broad service-role access; weak RLS; sensitive telemetry; permissive TLS; untested upload paths; and security claims unsupported by evidence.
+Relying on client-side guards, hiding UI controls, obfuscation, publishable keys, device biometrics, root detection, or CORS as authorization; broad service-role access; weak RLS; sensitive telemetry; permissive TLS; untested upload paths; and security claims unsupported by evidence. Treating vendor defaults, SDK dashboards, consent banners, or a generic "PII scrub" setting as proof that telemetry is safe is also insufficient.
 
 ## Acceptance gate
 
