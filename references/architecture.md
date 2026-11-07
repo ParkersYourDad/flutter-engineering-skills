@@ -124,6 +124,19 @@ For projects using GoRouter, verify the pinned `go_router` version/API on pub.de
 - Back behavior: use `PopScope` for unsaved changes rather than deprecated `WillPopScope`. Verify Android predictive-back requirements against current Flutter/Android docs. iOS pages should preserve expected swipe-back behavior.
 - State restoration: set `restorationScopeId` only for flows where losing state matters (e.g. long forms).
 
+## App and feature lifecycle
+
+Treat app lifecycle, widget/provider lifecycle, and process lifetime as separate concerns. A mounted widget or live provider does not guarantee that the operating system will keep the process alive.
+
+- **Ownership:** every subscription, timer, controller, stream, request, and background operation has one explicit owner and a defined stop condition. Screen-scoped work ends when its screen/provider is disposed or the user leaves the flow; app-scoped work has a documented app-level owner.
+- **Pause/background:** stop or suspend nonessential polling, animations, media capture/playback, location work, and subscriptions when the product no longer needs them. Do not assume the app will receive enough background execution time to finish arbitrary work. Use platform-supported background scheduling only for a real product requirement.
+- **Resume/foreground:** re-check session validity, permissions, and time-sensitive data; reconcile pending mutations and refresh only data whose freshness contract requires it. Recreate subscriptions exactly once and prioritize foreground requests over speculative/background work.
+- **Process death:** assume in-memory state can disappear without a final callback. Persist only user work or pending operations the product promises to recover; version persisted data and define restore, expiry, corruption, and sign-out behavior. Do not persist transient UI state by default.
+- **Async cancellation:** cancel work when its owner ends, route intent changes, or the account changes. Treat cancellation as a distinct outcome—not a user-facing failure and never a retry trigger. Cancellation must reach the actual request/subscription where supported, not merely suppress the final state update.
+- **Stale results:** mounted checks prevent writes after disposal but do not stop an older request overwriting a newer result while the owner remains mounted. Use request generations, operation IDs, or equivalent latest-intent guards where overlapping operations are possible; verify account/session identity before applying results.
+- **Account/session changes:** clear user-scoped in-memory state, caches, subscriptions, and pending UI state on sign-out/account switch. Durable queued work must carry its owning account identity and must never replay under a different account; re-authorize on the server.
+- **Background work:** make work bounded, idempotent where possible, observable, and safe to repeat after interruption. Do not keep the process alive with timer loops or assume exact execution times.
+
 ## Errors
 
 - One sealed `AppFailure` hierarchy (network, timeout, unauthorized, server, validation, storage, unknown). Repositories convert exceptions at the data boundary; Notifiers expose `AsyncError` carrying an `AppFailure`.
