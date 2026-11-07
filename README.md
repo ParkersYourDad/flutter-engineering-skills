@@ -1,27 +1,51 @@
-# Flutter Engineering Skills
+# Flutter Product Engineering Skills
 
-Production-oriented AI-assisted engineering guidance for Flutter and Dart mobile applications (Android and iOS).
+A coordinated skill set for building high-quality Flutter/Dart Android and iOS products. The engineering target is deep Flutter/Dart correctness and maintainability, paired with original Apple-HIG-informed product craft and platform-appropriate behavior.
 
-## Skill
+## Core entrypoint
 
-- `SKILL.md` — skill entrypoint and operating rules.
+- [SKILL.md](SKILL.md) — Flutter/Dart implementation team, fixed constraints, evidence rules, and specialist routing.
 
-## References
+## Specialist skills
 
-- `references/architecture.md` — architecture, layers, Riverpod, GoRouter, networking, storage, configuration.
-- `references/backend-supabase.md` — Supabase backend architecture, RLS, Auth, Storage, Realtime, Edge Functions, Gemini API security.
-- `references/design-system.md` — first-party design system, components, screen states, motion.
-- `references/localization-accessibility.md` — English/Arabic localization, RTL, accessibility.
-- `references/pitfalls.md` — common failures, prevention, detection, regression practices.
-- `references/quality.md` — testing, performance, security, platform, CI/CD, release gates.
-- `references/workflow.md` — requirements, traceability, project docs, decision authority, reporting.
+| Skill | Owns |
+|---|---|
+| [Company Orchestrator](skills/company-orchestrator/SKILL.md) | Cross-team planning, task routing, dependencies, conflicts, and final readiness |
+| [Product Discovery](skills/product-discovery/SKILL.md) | User problem, evidence, scope, requirements, and acceptance criteria |
+| [Apple Product Craft](skills/apple-product-craft/SKILL.md) | UX/UI, Apple HIG-informed design, visual hierarchy, motion, and native-feeling interaction |
+| [Flutter Architecture](skills/flutter-architecture/SKILL.md) | Architecture, state ownership, boundaries, contracts, and ADRs |
+| [Supabase Backend Engineering](skills/supabase-backend-engineering/SKILL.md) | PostgreSQL, RLS, Auth, Storage, Realtime, Edge Functions, and Gemini |
+| [Accessibility & Localization](skills/accessibility-localization/SKILL.md) | Screen readers, text scaling, contrast, Arabic/English, and RTL |
+| [Mobile QA Engineering](skills/mobile-qa-engineering/SKILL.md) | Independent testing, regression, device coverage, and acceptance |
+| [Mobile Security Engineering](skills/mobile-security-engineering/SKILL.md) | Threat modeling, client/API/backend security, and independent review |
+| [Mobile Performance & Reliability](skills/mobile-performance-reliability/SKILL.md) | Profiling, frame timing, startup, memory, network, and reliability |
+| [Mobile Release & Operations](skills/mobile-release-operations/SKILL.md) | CI/CD, signing, rollout, monitoring, incidents, and recovery |
 
-Load only the reference needed for the current task. Verify current package APIs, versions, and platform requirements against official sources before implementation.
+Flutter/Dart implementation remains owned by the root SKILL.md; specialist skills do not create competing Flutter implementations.
 
-## Scope
+## Shared references
 
-Flutter + Dart; Android and iOS only. Manual Riverpod 3 providers, GoRouter, Dio for non-Supabase HTTP integrations, Supabase as the default full backend, Gemini through Supabase Edge Functions, and a first-party design system. No third-party UI framework as the design foundation and no generated-code dependencies (except Flutter gen-l10n).
+- [Team Operating Model](references/team-operating-model.md) — universal role boundaries, handoff contract, severity, evidence, and definition of done.
+- [Architecture](references/architecture.md) — project structure, layers, Riverpod, GoRouter, networking, storage, and configuration.
+- [Supabase Backend](references/backend-supabase.md) — database security, RLS, migrations, Auth, Storage, Realtime, Edge Functions, and Gemini.
+- [Design System](references/design-system.md) — first-party Flutter design system, components, states, and motion.
+- [Localization & Accessibility](references/localization-accessibility.md) — English/Arabic, RTL, formatting, and accessibility requirements.
+- [Pitfalls](references/pitfalls.md) — recurring errors, prevention, detection, and regression practices.
+- [Quality](references/quality.md) — tests, performance, security, CI/CD, production operations, and release gates.
+- [Workflow](references/workflow.md) — requirements, project docs, decision authority, reporting, and learning loop.
 
-## Usage
+## How to use
 
-Install or copy this skill into the AI coding tool's supported skills directory. Keep `SKILL.md` and its `references/` directory together so linked references resolve.
+- Use the root SKILL.md for Flutter/Dart implementation tasks.
+- Use the Company Orchestrator for new products, multi-team features, or end-to-end delivery.
+- Load only relevant specialist skills. Do not load every specialist for a trivial task.
+- Keep the repository structure intact so specialist skills can reach shared references under references/.
+- If the agent cannot spawn separate agents, it may perform sequential specialist passes, but it must not claim independent team execution.
+
+## Product and engineering scope
+
+Flutter + Dart; Android and iOS. SDK-first implementation, first-party design system, stable SDK pinning through FVM, explicit architecture and quality gates, no generated Dart code except Flutter's built-in gen-l10n workflow. Supabase is the default backend when a backend is needed, not a requirement for every app.
+
+## Quality philosophy
+
+No checklist can guarantee zero defects. Quality is earned through explicit requirements, traceable acceptance, independent verification, real-device testing, security controls, measurable performance, controlled releases, monitoring, and recovery drills. Unverified work must stay labeled as unverified.
