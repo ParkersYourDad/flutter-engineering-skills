@@ -199,6 +199,7 @@ GitHub Actions should make routine checks repeatable without giving every workfl
 - Prefer OIDC/short-lived credentials when supported by the destination service. Masking is not a substitute for not printing, persisting, or uploading secrets.
 - Cache pub dependencies safely; do not share writable caches from untrusted jobs with privileged release jobs. Retain and restrict access to build artifacts and symbol files.
 - Release workflow: protected tag/release trigger, production flavor, signed Android/iOS release artifacts on the appropriate platform runners, production credentials from protected secrets only, no debug/test credentials or verbose logging, and a manual approval gate before publication. PR jobs must never receive production signing material. Keep crash-symbol files private and retrievable for the exact release.
+- Run repository-owned validator self-tests in CI, including positive and negative cases for metadata and local-link boundaries; keep these checks independent of Flutter SDK availability.
 - Validate workflow syntax and permissions; a local YAML parse is not a GitHub Actions run. Report actual workflow run IDs/results when available.
 
 ## Device matrix
