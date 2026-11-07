@@ -146,6 +146,16 @@ Enforce with tooling, not review: `flutter_lints` as a base plus strict analyzer
 - Comments explain why, not what. Public design-system APIs get dartdoc.
 - Naming: `snake_case` files, one primary type per file, feature-prefixed providers where naming collisions are possible.
 
+## Official engineering references
+
+- Flutter UI and framework guidance: https://docs.flutter.dev/ui
+- Flutter adaptive and responsive design: https://docs.flutter.dev/ui/adaptive-responsive
+- Flutter performance practices: https://docs.flutter.dev/perf/best-practices
+- Dart Effective Dart: https://dart.dev/effective-dart
+- Dart style guide: https://dart.dev/effective-dart/style
+- Dart API design guide: https://dart.dev/effective-dart/design
+- Dart usage guide: https://dart.dev/effective-dart/usage
+
 ## Checklist: project initialization
 
 - [M] Pin the approved stable SDK with FVM first, then create the project with `fvm flutter create --platforms=android,ios`; confirm no web/desktop platform directories.
