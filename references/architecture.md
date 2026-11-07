@@ -68,6 +68,7 @@ Starter-kit rule: `core`, `design_system`, and `l10n` contain nothing specific t
 
 ## Config and environments
 
+- **FVM is mandatory:** pin one exact Flutter stable release in `.fvmrc`; CI and local commands use that same SDK via `fvm flutter` / `fvm dart`. Do not use beta/dev/master. Dart follows the selected Flutter SDK; `environment.sdk` must be compatible, not used to silently select a different toolchain. If FVM is unavailable, stop and report the toolchain mismatch rather than guessing which Flutter binary ran.
 - Three flavors: `dev`, `staging`, `prod`. Android `productFlavors`; iOS schemes + xcconfig. Distinct application IDs/bundle IDs and display names so builds coexist.
 - Non-secret config (base URL, flags) via `--dart-define-from-file`, read once in `core/config`. Verify the flag against current Flutter docs.
 - Nothing in the app binary is secret. Client-shipped API keys are extractable; secrets must remain on a backend. CI secrets belong in CI secret storage only.
@@ -147,7 +148,7 @@ Enforce with tooling, not review: `flutter_lints` as a base plus strict analyzer
 ## Checklist: project initialization
 
 - [M] `flutter create --platforms=android,ios`; confirm no web/desktop platform directories.
-- [M] SDK and Flutter constraints pinned in `pubspec.yaml`; versions verified on official sources and recorded in `docs/PROJECT.md`.
+- [M] Exact Flutter stable SDK pinned in `.fvmrc` and CI; Dart/Flutter constraints in `pubspec.yaml` are compatible; versions verified on official sources and recorded in `docs/PROJECT.md`.
 - [M] Dependencies limited to the approved baseline: `flutter_localizations` (SDK), `intl`, `go_router`, `flutter_riverpod`, `supabase_flutter`, `dio` (for non-Supabase HTTP only), `shared_preferences`; `flutter_secure_storage` only for app-owned secrets that genuinely need device storage. Verify each package's current stable version, SDK constraint, maintenance, license, and breaking changes. Anything else needs a `DECISIONS.md` entry.
 - [M] `analysis_options.yaml` strict; format, analyze, and tests clean at first commit.
 - [M] Folder structure and architecture-boundary test, including the allowed `app_contract` dependency and prohibition on feature-to-app/feature-to-feature imports.
