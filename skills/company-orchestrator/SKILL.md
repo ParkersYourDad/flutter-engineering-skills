@@ -47,6 +47,28 @@ Load only the skills relevant to the requested work. A simple UI fix does not ne
 
 Engage `mobile-performance-reliability` early, before implementation, when a feature materially affects startup, continuous or complex animation, scrolling large/rapidly changing collections, media or image-heavy rendering, expensive local processing, frequent updates, background work, or latency-sensitive journeys. Define the scenario and measurable performance budget before implementation when performance is a product requirement. Do not require a formal performance pass for a simple static screen or ordinary form without a performance risk or observed issue. QA must not treat widget-test success as evidence of real-device frame rate.
 
+## Risk-driven routing protocol
+
+Before loading specialists, classify the task using the T0–T3 tiers in `references/quality.md`. Choose the highest tier triggered by the change's actual impact; do not use file count or perceived complexity as a proxy.
+
+1. **T0 — Documentation/metadata:** validate links, references, metadata, and relevant syntax. No product specialists unless the content changes a technical or product decision.
+2. **T1 — Bounded app change:** root Flutter engineering plus only the affected UI/design or localization checks. Use focused tests; no full company workflow for an isolated low-risk fix.
+3. **T2 — Shared/cross-layer change:** load Architecture for ownership/contracts; add Design, Accessibility, QA, Native, or Performance only when their trigger applies. Define acceptance and regression evidence before implementation.
+4. **T3 — Critical/high-consequence change:** add Security and/or Release Operations as triggered, plus independent QA. Analyze abuse cases, data boundaries, rollback/recovery, and negative tests before declaring readiness.
+
+Re-evaluate the tier when code inspection reveals sensitive data, a new external processor, authorization boundary, native permission, shared component, migration, lifecycle risk, or critical performance path. Raise the tier immediately when a trigger appears.
+
+### Routing guardrails
+
+- The routing table is a capability map, not a checklist to invoke every specialist.
+- Load only the reference files needed for the task; do not reread every skill for a bounded change.
+- A specialist is activated by a concrete trigger or observed risk, not by the mere existence of a related technology.
+- Keep one implementation owner per deliverable. Reviews may be separate, but never claim independent review unless another agent/person actually performed it.
+- For T0/T1, a concise plan and targeted evidence are normally enough. T2/T3 require explicit acceptance criteria and the applicable gates.
+- If a required specialist or target environment is unavailable, continue safe work where possible and report the review/check as Blocked or Not verified; never silently substitute an unsupported check.
+
+## Standard operating sequence
+
 ## Standard operating sequence
 
 ### 1. Intake and discovery
