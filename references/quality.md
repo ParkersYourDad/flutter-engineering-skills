@@ -16,14 +16,16 @@
 Run commands and read output; report results, not intentions.
 
 ```sh
-dart format --output=none --set-exit-if-changed .
-flutter analyze
-flutter test
-flutter test integration_test        # requires emulator/simulator/device
-flutter pub outdated                 # informational dependency health
-flutter build apk --release
-flutter build appbundle --release
-flutter build ipa --release          # macOS + signing only
+fvm --version
+fvm flutter --version
+fvm dart format --output=none --set-exit-if-changed .
+fvm flutter analyze
+fvm flutter test
+fvm flutter test integration_test        # requires emulator/simulator/device
+fvm flutter pub outdated                 # informational dependency health
+fvm flutter build apk --release
+fvm flutter build appbundle --release
+fvm flutter build ipa --release          # macOS + signing only
 ```
 
 Check current flag names with `flutter build --help` before relying on them.
