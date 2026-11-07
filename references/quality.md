@@ -57,7 +57,7 @@ Test behavior and requirements by risk. Do not chase coverage percentages or tes
 
 - **Unit:** pure logic, parsers/DTO mapping (including malformed input), validators, formatters, failure mapping.
 - **State:** Notifiers via `ProviderContainer` with overrides; `addTearDown(container.dispose)`; assert loading → data/error and double-submit protection.
-- **Widget:** component states/variants; screens in loading/empty/error/data; interactions; semantics; each in `en`/`ar`, light/dark, text scale 1.0 and 2.0 for shared components.
+- **Widget:** component states/variants; screens in loading/empty/error/data; interactions; semantics; each in `en`/`ar`, light/dark, text scale 1.0 and 2.0 for shared components. For Arabic coverage, include RTL geometry, longer translated strings, mixed Arabic/Latin values (URLs, email, phone, identifiers), punctuation, caret/input behavior, and ICU plural/select cases used by the product.
 - **Navigation:** redirects, deep-link parsing, malformed params, back behavior, tab-stack preservation.
 - **Data:** repository + fake HTTP adapter: success, timeout, 401 refresh, 5xx, malformed JSON, cancellation.
 - **Golden:** shared components and a few key screens only; generate on one CI platform (goldens differ across OSes), load real fonts, review diffs rather than regenerating blindly.
@@ -96,7 +96,7 @@ Measure before changing code. "Optimized", "smooth", and "fast" are claims that 
 - For products with background work, media, location, frequent sync, or realtime subscriptions, test idle/background behavior, request frequency, stream disposal, battery/thermal impact, and pause/resume recovery. Do not poll or keep animations/timers active when the feature is not visible or needed.
 - Define budgets per product in `REQUIREMENTS.md`: device class, mode, scenario, dataset, network condition, metric, percentile, threshold, and baseline. A change that regresses a critical journey beyond its approved budget must be fixed or explicitly accepted by the product owner with a recorded reason.
 
-Known-safe starting points (not substitutes for measurement): `const` widgets where applicable, `ref.watch(...select)` for narrow state, lazy lists, decode-size-aware images, bounded caches, deferring non-critical work without delaying first interaction, and disposing/cancelling work when no longer needed.
+Useful tools, not blanket rules (never substitutes for measurement): `const` widgets where applicable, `ref.watch(...select)` when it meaningfully narrows a dependency, lazy lists, decode-size-aware images, bounded caches, deferring non-critical work without delaying first interaction, and disposing/cancelling work when no longer needed. Do not add `.select()` mechanically to every provider or optimize rebuilds without identifying an actual dependency/rebuild concern.
 
 Release optimization: verify obfuscation/minification and `--split-debug-info` behavior in release builds. Archive symbol files privately for crash diagnosis; do not publish them as public artifacts.
 
@@ -247,7 +247,7 @@ A gate passes only when each applicable item is observed, not assumed.
 - [M] Every requirement ID has Passed acceptance with evidence.
 - [M] Applicable screen states complete via `AsyncStateView`.
 - [M] Failure paths tested (network, validation, unauthorized); double-submit and rapid-navigation safe.
-- [M] Localized (`en`/`ar`), RTL verified, accessibility checks pass.
+- [M] Localized (`en`/`ar`), RTL verified, accessibility checks pass. For relevant Arabic journeys, include mixed-direction content, locale-sensitive number/date/currency formatting, and required ICU plural categories; report platform/device coverage rather than assuming a locale toggle proves correctness.
 - [M] Lifecycle verified: background/resume, rotation if allowed, process death for critical flows.
 - [M] Format, analyze, tests green; no new dependency without ADR.
 
