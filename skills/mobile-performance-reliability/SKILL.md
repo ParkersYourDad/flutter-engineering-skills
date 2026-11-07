@@ -61,6 +61,8 @@ Premature isolates, excessive RepaintBoundary, unbounded caches, loading entire 
 
 For production-critical journeys, work with Operations to define SLIs/SLOs for completion, latency, availability, and freshness. Investigate crash/ANR rates, startup regressions, backend dependencies, timeouts, retry storms, and recovery after app pause/resume or connectivity changes.
 
+Review lifecycle reliability as a user journey, not only a callback: confirm ownership and disposal of timers/streams/controllers, cancellation reaches in-flight work, stale responses cannot overwrite newer intent, pending mutations reconcile safely after interruption, and account-scoped data is cleared or isolated on identity changes. Treat process death as possible at any point; persist only state the product promises to recover. Background work must follow platform scheduling limits and must not depend on a continuously running process.
+
 ## Acceptance gate
 
-Every critical performance requirement has a repeatable scenario, environment, metric, percentile, threshold, and baseline. Findings identify the cause; claimed optimizations include before/after evidence. Unmeasured hardware/platform behavior is Not verified.
+Every critical performance requirement has a repeatable scenario, environment, metric, percentile, threshold, and baseline. Reliability reviews also identify lifecycle owners, cancellation/recovery behavior, and account isolation for critical flows. Findings identify the cause; claimed optimizations include before/after evidence. Unmeasured hardware/platform behavior is Not verified.
