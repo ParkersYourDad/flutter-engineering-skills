@@ -74,10 +74,10 @@ def self_test() -> int:
         (root / "integration_test").mkdir()
 
         (root / "lib" / "directional.dart").write_text(
-            "const padding = EdgeInsetsDirectional.only(start: 8);\\n"
-            "const alignment = AlignmentDirectional.centerStart;\\n"
-            "const radius = BorderRadiusDirectional.only(topStart: Radius.circular(8));\\n"
-            "const textAlign = TextAlign.start;\\n",
+            "const padding = EdgeInsetsDirectional.only(start: 8);\n"
+            "const alignment = AlignmentDirectional.centerStart;\n"
+            "const radius = BorderRadiusDirectional.only(topStart: Radius.circular(8));\n"
+            "const textAlign = TextAlign.start;\n",
             encoding="utf-8",
         )
         if scan(root):
@@ -85,11 +85,11 @@ def self_test() -> int:
             return 1
 
         (root / "test" / "physical.dart").write_text(
-            "EdgeInsets.only(left: 8);\\n"
-            "Alignment.centerRight;\\n"
-            "BorderRadius.only(topLeft: Radius.circular(8));\\n"
-            "Positioned(right: 0);\\n"
-            "TextAlign.left;\\n",
+            "EdgeInsets.only(left: 8);\n"
+            "Alignment.centerRight;\n"
+            "BorderRadius.only(topLeft: Radius.circular(8));\n"
+            "Positioned(right: 0);\n"
+            "TextAlign.left;\n",
             encoding="utf-8",
         )
         violations = scan(root)
@@ -100,8 +100,8 @@ def self_test() -> int:
             return 1
 
         (root / "test" / "physical.dart").write_text(
-            "EdgeInsets.only(left: 8, // rtl-lint: ignore -- physical media scrubber\\n"
-            ");\\n",
+            "EdgeInsets.only(left: 8, // rtl-lint: ignore -- physical media scrubber\n"
+            ");\n",
             encoding="utf-8",
         )
         if scan(root):
