@@ -43,6 +43,7 @@ Do not run a full reference study for a trivial spacing fix, a bug with an obvio
 - Paginate sequentially with the cursor returned by the same query. Do not guess cursors or parallelize cursor-dependent pages.
 - Research only what is needed for the user's current product question. Never scrape or export the catalog as a dataset, harvest assets, or bypass usage limits.
 - Appllama's library is evidence about published product patterns, not proof that a pattern is best, accessible, ethical, profitable for this product, or legally reusable. Revenue/download/rating are context, not design quality scores.
+- Appllama's published library is strongly oriented toward iOS/top-grossing app references. Treat those screens as research input, not Android specifications. For Android, separately verify platform navigation, system controls, permissions, typography, and interaction conventions using current Android guidance and Android-targeted examples.
 
 ## Research workflow
 
@@ -113,6 +114,7 @@ Hand off:
 - Interaction state model: idle, pressed, selected, loading, disabled, success, error, empty, offline, and permission states where applicable.
 - Navigation contract: push, replace/go, tab stack, sheet/modal/overlay, deep link, and Back behavior on both platforms.
 - Motion specification: purpose, trigger, source of velocity if gesture-driven, settle behavior, interruption/cancellation, duration/curve or spring class, and reduced-motion alternative.
+- Interaction contract: semantic action for each meaningful control, state transition, expected result, cancellation/retry behavior, and analytics event only when a product metric requires it.
 - Localization, Arabic/RTL, screen-reader, focus, and Dynamic Type implications.
 - Evidence references and open questions.
 - Acceptance criteria that QA can verify.
