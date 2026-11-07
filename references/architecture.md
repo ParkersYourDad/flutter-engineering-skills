@@ -30,8 +30,9 @@ lib/
     data/              # repositories, data sources, DTOs, mapping
     domain/            # optional non-trivial feature business rules/entities
     presentation/      # screens, widgets, notifiers
-  supabase/            # Supabase config, migrations, seed and Edge Functions (backend source)
 test/                  # mirrors lib/
+integration_test/       # critical end-to-end journeys (when configured)
+supabase/               # ROOT-LEVEL Supabase config, migrations, seed, tests and Edge Functions
 ```
 
 Dependency direction (enforce with a test that scans `lib/` imports; no extra package needed):
@@ -147,16 +148,16 @@ Enforce with tooling, not review: `flutter_lints` as a base plus strict analyzer
 
 ## Checklist: project initialization
 
-- [M] `flutter create --platforms=android,ios`; confirm no web/desktop platform directories.
+- [M] Pin the approved stable SDK with FVM first, then create the project with `fvm flutter create --platforms=android,ios`; confirm no web/desktop platform directories.
 - [M] Exact Flutter stable SDK pinned in `.fvmrc` and CI; Dart/Flutter constraints in `pubspec.yaml` are compatible; versions verified on official sources and recorded in `docs/PROJECT.md`.
-- [M] Dependencies limited to the approved baseline: `flutter_localizations` (SDK), `intl`, `go_router`, `flutter_riverpod`, `supabase_flutter`, `dio` (for non-Supabase HTTP only), `shared_preferences`; `flutter_secure_storage` only for app-owned secrets that genuinely need device storage. Verify each package's current stable version, SDK constraint, maintenance, license, and breaking changes. Anything else needs a `DECISIONS.md` entry.
+- [M] Keep the shared baseline minimal: `flutter_localizations` (SDK), `intl`, `go_router`, `flutter_riverpod`, and `shared_preferences` for actual preferences. Add `supabase_flutter` only when the product needs a backend (Supabase is the default backend choice); add `dio` only for non-Supabase HTTP integrations; add `flutter_secure_storage` only for app-owned credentials or when the session-storage threat assessment requires secure Supabase session persistence. Verify each selected package's current stable version, SDK constraint, maintenance, license, and breaking changes. Anything outside the approved stack needs a `DECISIONS.md` entry.
 - [M] `analysis_options.yaml` strict; format, analyze, and tests clean at first commit.
 - [M] Folder structure and architecture-boundary test, including the allowed `app_contract` dependency and prohibition on feature-to-app/feature-to-feature imports.
 - [M] `l10n.yaml` + `app_en.arb` + `app_ar.arb`; locale resolution and persistence (see `localization-accessibility.md`).
 - [M] Design-system skeleton: tokens, light/dark theme, motion tokens, one or two real components; app shell on `WidgetsApp.router` (see `design-system.md`).
 - [M] Flavors and `--dart-define-from-file` config; distinct app IDs.
 - [M] Error model, redacting logging, global error handlers.
-- [M] Supabase project config, versioned SQL migrations, RLS on every exposed table, least-privilege grants, and backend security tests (see `backend-supabase.md`).
+- [C] If the product requires a backend: Supabase is the default platform; keep project config, migrations, tests, and Edge Functions under the repository-root `supabase/` directory. Every exposed table needs RLS, least-privilege grants, and passing backend security tests (see `backend-supabase.md`). If no backend is required, do not create an empty Supabase project or placeholder migrations.
 - [C] Auth providers, Storage buckets, Realtime channels, and Edge Functions are configured only when required; Gemini calls use an authenticated Edge Function and a server-side secret.
 - [M] `.gitignore` covers keystores, `key.properties`, service config secrets, env files; no secret committed.
 - [M] Settings screen with theme and language (real consumers of persisted preferences; reference feature, not placeholder).
