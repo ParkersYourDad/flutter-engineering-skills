@@ -37,7 +37,7 @@ Create under `docs/` at project start; keep short; never duplicate content betwe
 3. **`DECISIONS.md`:** dated one-paragraph ADRs (context, decision, consequences) for long-term-cost choices: dependencies, Supabase service choices, data ownership/RLS model, Gemini data handling and cost controls, storage, auth, architecture deviations. Includes an Assumptions section; remove assumptions as confirmed.
 4. **`ISSUES.md`:** known issues with ID, impact, workaround, status. Delete entries when fixed (regression test is permanent record).
 
-README holds setup, run, and release commands only.
+In the generated Flutter application, keep its README focused on setup, run, and release commands; the skill repository's README may describe the skill and link its references.
 
 ## Decision authority
 
