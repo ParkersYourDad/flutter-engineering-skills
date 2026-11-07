@@ -5,6 +5,18 @@ description: Researches real mobile app screens, onboarding, paywalls, feature j
 
 # Mobile Design Research
 
+## Shared standards
+
+Use these central documents as the source of truth:
+- [Team Operating Model](../../references/team-operating-model.md)
+- [Flutter UI Translation](../../references/flutter-ui-translation.md)
+- [Design System](../../references/design-system.md)
+- [Quality and verification](../../references/quality.md)
+
+## Optional Appllama MCP connection
+
+Appllama documents the MCP endpoint at https://mcp.appllama.io/mcp. Configure it in the coding agent's supported MCP settings and authenticate with the user's own Appllama account. The MCP is optional. If no Appllama tool is available in the current agent environment, do not claim live library access; use supplied references or other authorized sources and state the limitation. Check current plan, credit allowance, and terms in Appllama before research; do not hardcode plan entitlements or credit prices into project code.
+
 ## Mission
 
 Replace guesswork with focused evidence from real mobile products. Study how relevant apps solve the same user problem, extract reusable interaction and information patterns, then create an original Flutter design specification.
