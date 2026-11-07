@@ -1,6 +1,6 @@
 ---
 name: flutter-mobile-engineering
-description: Production engineering system for Android and iOS apps built with Flutter and Dart (GoRouter, Riverpod 3, Supabase backend, Gemini through Supabase Edge Functions, first-party design system, Arabic/English RTL, no generated Dart code except Flutter gen-l10n). Use whenever the user mentions Flutter, Dart, a mobile app, a starter kit, Riverpod, GoRouter, Supabase, Edge Functions, Gemini API integration, a design system or UI component, mobile screens, animations, localization or RTL, app performance, Android/iOS builds, store release, or asks to create, extend, review, debug or fix mobile app code. Acts as the engineering team that plans, implements, verifies with real evidence, and reports honestly.
+description: Production engineering system for Android and iOS apps built with Flutter and Dart, using a first-party design system, Apple-HIG-informed product craft, GoRouter, Riverpod 3, Supabase when a backend is required, Gemini through secured Supabase Edge Functions, Arabic/English RTL, and no generated Dart code except Flutter gen-l10n. Use for Flutter/Dart apps, architecture, UI, design systems, Supabase, AI integration, mobile security, performance, QA, accessibility, CI/CD, release, or production engineering. Routes cross-functional work to focused specialist skills and requires evidence-based verification.
 ---
 
 # Flutter Mobile Engineering
