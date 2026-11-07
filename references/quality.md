@@ -21,6 +21,8 @@ fvm --version
 fvm flutter --version
 fvm dart format --output=none --set-exit-if-changed .
 fvm flutter analyze
+python3 scripts/check_rtl_directionality.py
+python3 scripts/validate_skills.py
 fvm flutter test
 fvm flutter test integration_test        # requires emulator/simulator/device
 fvm flutter pub outdated                 # informational dependency health
