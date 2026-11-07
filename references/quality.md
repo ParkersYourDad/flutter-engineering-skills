@@ -158,13 +158,14 @@ Upgrade policy: upgrade deliberately in a dedicated change (SDK first, then pack
 
 GitHub Actions should make routine checks repeatable without giving every workflow production access.
 
-- Every PR runs format check, analyze, unit/widget tests, architecture/localization checks, and an Android build. Run golden tests on one controlled runner OS. Run iOS build/tests on a macOS runner when the toolchain is configured.
+- Every PR runs format check, analyze, unit/widget tests, architecture/localization checks, and an Android debug build. Run golden tests on one controlled runner OS. On macOS, compile and test the iOS simulator target without production signing; do not make iOS verification depend on having production certificates available to PR jobs.
+- When Supabase is used, run local database migration and pgTAP/RLS tests in CI for changes to migrations, policies, or database functions; run Edge Function type/tests for function changes. Keep Docker/CLI setup isolated and pin the toolchain used by CI.
 - Pin the Flutter SDK to the project's `.fvmrc` version and use the same SDK in local development and CI. Pin third-party actions to verified full commit SHAs, not mutable tags alone; review updates deliberately.
 - Set least-privilege workflow/job `permissions` explicitly (read-only by default); grant write/deploy permissions only to the job that needs them.
 - Do not pass secrets to fork PRs or untrusted code. Avoid privileged `pull_request_target` workflows that execute PR-controlled code. Keep signing/deployment secrets in protected GitHub Environments; require approval for production deploys and migrations.
 - Prefer OIDC/short-lived credentials when supported by the destination service. Masking is not a substitute for not printing, persisting, or uploading secrets.
 - Cache pub dependencies safely; do not share writable caches from untrusted jobs with privileged release jobs. Retain and restrict access to build artifacts and symbol files.
-- Release workflow: protected tag/release trigger, production flavor, signed artifacts from secrets, no debug/test credentials or verbose logging, and a manual approval gate before publication. Keep crash-symbol files private and retrievable for the exact release.
+- Release workflow: protected tag/release trigger, production flavor, signed Android/iOS release artifacts on the appropriate platform runners, production credentials from protected secrets only, no debug/test credentials or verbose logging, and a manual approval gate before publication. PR jobs must never receive production signing material. Keep crash-symbol files private and retrievable for the exact release.
 - Validate workflow syntax and permissions; a local YAML parse is not a GitHub Actions run. Report actual workflow run IDs/results when available.
 
 ## Device matrix
