@@ -25,6 +25,9 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Test skill validator
+        run: python3 scripts/validate_skills.py --self-test
+
       - name: Validate skills
         run: python3 scripts/validate_skills.py
 
