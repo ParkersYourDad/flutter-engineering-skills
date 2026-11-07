@@ -9,6 +9,7 @@ Production-oriented AI-assisted engineering guidance for Flutter and Dart mobile
 ## References
 
 - `references/architecture.md` — architecture, layers, Riverpod, GoRouter, networking, storage, configuration.
+- `references/backend-supabase.md` — Supabase backend architecture, RLS, Auth, Storage, Realtime, Edge Functions, Gemini API security.
 - `references/design-system.md` — first-party design system, components, screen states, motion.
 - `references/localization-accessibility.md` — English/Arabic localization, RTL, accessibility.
 - `references/pitfalls.md` — common failures, prevention, detection, regression practices.
@@ -19,7 +20,7 @@ Load only the reference needed for the current task. Verify current package APIs
 
 ## Scope
 
-Flutter + Dart; Android and iOS only. Manual Riverpod 3 providers, GoRouter, Dio, feature-first architecture, and a first-party design system. No third-party UI framework as the design foundation and no generated-code dependencies.
+Flutter + Dart; Android and iOS only. Manual Riverpod 3 providers, GoRouter, Dio for non-Supabase HTTP integrations, Supabase as the default full backend, Gemini through Supabase Edge Functions, and a first-party design system. No third-party UI framework as the design foundation and no generated-code dependencies (except Flutter gen-l10n).
 
 ## Usage
 
