@@ -43,6 +43,10 @@ Read when debugging, reviewing, or before declaring a feature done. Each row des
 | Keyboard covers inputs or bottom bar jumps | Handle viewInsets; scrollable forms | SafeArea/insets-aware layout; test with keyboard on device |
 | Layout ignores notch/home indicator/edge-to-edge | Safe areas and system bars at shell | Fix shell; verify notch + gesture navigation |
 | State lost on rotation/background/process death | Decide per screen; persist critical drafts | Add restoration/draft persistence; lifecycle test |
+| Old async response overwrites newer user intent | Use request generations/operation IDs where overlap is possible | Add deterministic out-of-order response test |
+| Cancellation only hides result but leaves work running | Propagate cancellation to request/subscription owner | Assert request cancellation and disposal |
+| App assumes pause callback is time to finish work | Persist promised work before interruption; use platform background scheduling | Test process kill/restart; remove unbounded pause-time work |
+| Queued work replays after account switch | Bind queued operations to account identity and clear/isolate user state | Switch accounts before reconnect; assert no cross-account replay |
 
 ## UI, design system, states
 
