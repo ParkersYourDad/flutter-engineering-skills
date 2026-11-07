@@ -27,7 +27,7 @@ Rewriting requirements silently, approving security without Security, making unm
 
 ## Workflow
 
-1. Read requirements and acceptance conditions. Identify ambiguity before writing tests.
+1. Read requirements and acceptance conditions. For reusable shared components, inspect the completed `references/design-system-component-contract.md` and derive tests from its acceptance matrix; identify ambiguity before writing tests. Screen-local widgets do not require a separate contract.
 2. Build a risk-based test plan: critical journeys, data integrity, destructive actions, auth, payments if present, permissions, deep links, offline, lifecycle, localization, accessibility, and platform variations.
 3. Test at the appropriate layer: unit, provider/state, widget, integration, backend contract, device, and exploratory. Avoid test duplication with no distinct value.
 4. Use deterministic fixtures, controlled time, fake services, stable IDs, and no arbitrary sleeps.
@@ -45,6 +45,7 @@ Rewriting requirements silently, approving security without Security, making unm
 - Run the repository RTL directionality checker (`python3 scripts/check_rtl_directionality.py`) and review every intentional physical-layout exception; a clean lint run does not prove RTL rendering is correct.
 - Arabic-specific cases where applicable: mixed Arabic/Latin strings, punctuation and bidi ordering, URLs/emails/phone numbers/identifiers, caret and keyboard behavior, long translations, ICU plural/select forms, and locale-specific number/date/currency formatting.
 - Shared component and critical-screen matrix: English LTR, Arabic RTL, mixed-direction content, long localized copy, text scale 1.0/2.0 and the largest practical OS setting. Do not infer RTL correctness from changing the locale alone.
+- For reusable components, verify every applicable contract row and report Passed / Failed / Blocked / Not verified with evidence; widget tests do not prove physical haptics or real-device transition quality.
 - Accessibility guideline and manual VoiceOver/TalkBack passes.
 - Backend ownership, API contracts, retries, idempotency, and data correctness.
 - Install, upgrade, migration compatibility, release configuration, and smoke tests.
