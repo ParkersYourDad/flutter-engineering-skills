@@ -14,6 +14,18 @@
 - Project initialization checklist
 - Architecture review checklist
 
+## Existing-project adaptation
+
+The architecture below is the reference for greenfield projects and for deliberate, approved changes—not a reason to restructure an established app.
+
+Before proposing architecture changes, inventory the actual Flutter/Dart SDK and toolchain, folder/module boundaries, state management, routing, backend and data ownership, dependency graph, code generation, tests, CI, release setup, and documented decisions. Record what is healthy, unsupported, risky, or blocking.
+
+- Preserve established state management, routing, backend, dependency injection, folder conventions, and code-generation workflow when they are maintained, testable, secure, and adequate for the requested work. Do not migrate to Riverpod, GoRouter, Supabase, FVM, or a preferred folder tree solely to match this reference.
+- Implement new work using the project's existing conventions unless they create a concrete defect or conflict with an explicit product/security requirement. Do not introduce a second state manager, router, service locator, backend client, or parallel architecture.
+- Prefer incremental boundary improvements. Do not combine a feature change with an unrelated architecture migration.
+- A migration requires a concrete problem and a decision record covering current state, alternatives, user impact, scope, compatibility, staged plan, rollback/forward-fix, verification, and measurable acceptance. Obtain product-owner approval for material cost, schedule, or behavior trade-offs.
+- If a current dependency or SDK is unsupported or has a relevant security issue, identify the specific evidence and propose the smallest safe remediation; do not silently replace the whole stack.
+
 ## Structure and dependency rules
 
 ```
@@ -76,16 +88,18 @@ Starter-kit rule: `core`, `design_system`, and `l10n` contain nothing specific t
 
 ## Backend ownership
 
-Supabase is the default backend platform. Flutter talks to Supabase through `supabase_flutter` for Auth, Postgres Data API, Storage, Realtime, and Edge Function invocation. Use each service only when the feature requires it; do not add Realtime, Storage buckets, or backend tables speculatively. Detailed security and operating rules are in `backend-supabase.md`.
+For greenfield products that need a backend, Supabase is the preferred default platform. Existing apps should retain their current backend (for example Firebase or a custom API) when it is supported and meets product/security needs; do not migrate backend providers merely to match this baseline. Flutter talks to Supabase through `supabase_flutter` only when Supabase is selected. Use each service only when the feature requires it; do not add Realtime, Storage buckets, or backend tables speculatively. Detailed Supabase security and operating rules are in `backend-supabase.md`.
 
 - Initialize one Supabase client during bootstrap and expose it through a Riverpod provider; repositories receive it through providers/constructors, never from widgets or global service locators.
 - Supabase SDK owns Supabase HTTP/WebSocket traffic. Use Dio for non-Supabase third-party REST APIs or a documented integration that genuinely needs it; do not duplicate Supabase calls through Dio.
 - Keep Supabase URL and publishable key as client configuration, not secrets. Never ship secret/service-role keys or Gemini API keys.
 - Supabase exceptions are mapped at the repository boundary into the app's `AppFailure`; do not leak raw backend/provider messages to users.
 
-## State (Riverpod 3)
+## State (Riverpod 3 greenfield baseline)
 
-Verify the current `flutter_riverpod` version and migration notes on pub.dev/riverpod.dev first.
+Riverpod 3 is the greenfield default, not a required migration target. In an existing app, retain its current state solution when it is healthy and consistent; do not add Riverpod alongside it. If a migration is justified, follow the Existing-project adaptation policy above and record a staged plan.
+
+For projects using Riverpod, verify the current `flutter_riverpod` version and migration notes on pub.dev/riverpod.dev first.
 
 - Use `Notifier`, `AsyncNotifier`, and plain `Provider`/`FutureProvider`/`StreamProvider`. Avoid legacy providers (`StateProvider`, `StateNotifierProvider`, `ChangeNotifierProvider`); Riverpod 3 moved them to `legacy.dart`.
 - **Ownership:** each state value has exactly one owning provider in the feature that owns the data. Widgets hold only ephemeral UI state (controllers, focus, tab index) in `StatefulWidget` State.
@@ -97,9 +111,11 @@ Verify the current `flutter_riverpod` version and migration notes on pub.dev/riv
 - **Optimistic updates:** only for fast, rarely failing actions. Always implement rollback and an error message.
 - **Persistence:** persist only user preferences and session; hydrate before first frame to avoid a flash of defaults.
 
-## Navigation (GoRouter)
+## Navigation (GoRouter greenfield baseline)
 
-Verify the pinned `go_router` version/API on pub.dev.
+GoRouter is the greenfield default, not a required migration target. In an existing app, retain its current router/navigation approach when it is healthy; do not introduce a second router. If a migration is justified, follow the Existing-project adaptation policy above and record a staged plan.
+
+For projects using GoRouter, verify the pinned `go_router` version/API on pub.dev.
 
 - Build `GoRouter` once inside a provider, never in build. Route names and path builders are defined in `app_contract/`; GoRouter route registration and page construction live in `app/`. No route string literals at feature call sites and no generated route code. Validate and parse params at the routing boundary; malformed input leads to not-found/error UI.
 - Tabs: `StatefulShellRoute.indexedStack` preserves per-tab stacks. Use `go` to switch locations and `push` for stack-based detail/modal flows.
@@ -174,7 +190,7 @@ Enforce with tooling, not review: `flutter_lints` as a base plus strict analyzer
 
 - [M] Pin the approved stable SDK with FVM first, then create the project with `fvm flutter create --platforms=android,ios`; confirm no web/desktop platform directories.
 - [M] Exact Flutter stable SDK pinned in `.fvmrc` and CI; Dart/Flutter constraints in `pubspec.yaml` are compatible; versions verified on official sources and recorded in `docs/PROJECT.md`.
-- [M] Keep the shared baseline minimal: `flutter_localizations` (SDK), `intl`, `go_router`, `flutter_riverpod`, and `shared_preferences` for actual preferences. Add `supabase_flutter` only when the product needs a backend (Supabase is the default backend choice); add `dio` only for non-Supabase HTTP integrations; add `flutter_secure_storage` only for app-owned credentials or when the session-storage threat assessment requires secure Supabase session persistence. Verify each selected package's current stable version, SDK constraint, maintenance, license, and breaking changes. Anything outside the approved stack needs a `DECISIONS.md` entry.
+- [M] For greenfield projects, keep the baseline minimal: `flutter_localizations` (SDK), `intl`, `go_router`, `flutter_riverpod`, and `shared_preferences` only for actual preferences. Add `supabase_flutter` only when a new product needs a backend; add `dio` only for non-Supabase HTTP integrations; add `flutter_secure_storage` only for app-owned credentials or when the session-storage threat assessment requires secure session persistence. In existing projects, review new/changed dependencies and retain healthy existing dependencies; do not treat the greenfield list as a migration whitelist. Verify each selected or changed package's current stable version, SDK constraint, maintenance, license, advisories, and breaking changes. Record material additions or migrations in `DECISIONS.md`.
 - [M] `analysis_options.yaml` strict; format, analyze, and tests clean at first commit.
 - [M] Folder structure and architecture-boundary test, including the allowed `app_contract` dependency and prohibition on feature-to-app/feature-to-feature imports.
 - [M] `l10n.yaml` + `app_en.arb` + `app_ar.arb`; locale resolution and persistence (see `localization-accessibility.md`).
