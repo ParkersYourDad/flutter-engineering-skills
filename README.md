@@ -42,6 +42,14 @@ Flutter/Dart implementation remains owned by the root SKILL.md; specialist skill
 - Keep the repository structure intact so specialist skills can reach shared references under references/.
 - If the agent cannot spawn separate agents, it may perform sequential specialist passes, but it must not claim independent team execution.
 
+## Validate the skill repository
+
+Run the dependency-free validator before merging skill changes:
+
+    python scripts/validate_skills.py
+
+It checks Agent Skills frontmatter, unique names, directory/name alignment, and local Markdown links. It validates repository structure only; it does not prove that an agent follows the instructions or that a generated app is correct.
+
 ## Product and engineering scope
 
 Flutter + Dart; Android and iOS. SDK-first implementation, first-party design system, stable SDK pinning through FVM, explicit architecture and quality gates, no generated Dart code except Flutter's built-in gen-l10n workflow. Supabase is the default backend when a backend is needed, not a requirement for every app.
