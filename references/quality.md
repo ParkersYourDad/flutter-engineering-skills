@@ -31,6 +31,26 @@ fvm flutter build ipa --release          # macOS + signing only
 
 Check current flag names with `flutter build --help` before relying on them.
 
+### Dart static-analysis baseline
+
+Every maintained Flutter app must commit an explicit `analysis_options.yaml`; do not rely on whichever defaults happen to ship with the current SDK or a transitive lint package. Enable Dart's sound static-analysis modes:
+
+```yaml
+ analyzer:
+   language:
+     strict-casts: true
+     strict-inference: true
+     strict-raw-types: true
+ ```
+
+Keep the project's selected lint rules in the same file (or a deliberately included, pinned lint package). Do not silence diagnostics globally, add broad exclusions, or use file-level ignores without a narrow explanation and a follow-up condition. Prefer fixing the underlying type/API issue. When an ignore is unavoidable, scope it to the smallest line/block and explain why.
+
+- [M] Verify the committed analyzer configuration contains all three strict modes.
+- [M] Run `fvm flutter analyze` on the pinned SDK; warnings/errors must be resolved or explicitly classified with evidence. Do not claim strict type safety merely because analysis exits successfully if strict modes are not enabled.
+- [M] CI runs the same analyzer configuration and pinned SDK as local development.
+- [R] Review newly introduced `dynamic`, raw collection types, unchecked casts, and broad `Object?` conversions during code review.
+
+
 ## Testing
 
 Test behavior and requirements by risk. Do not chase coverage percentages or test implementation details.
@@ -148,7 +168,7 @@ Select risk-appropriate verification depth for each product. This is an engineer
 
 ## Dependencies and upgrades
 
-Admission checklist per package, recorded in `DECISIONS.md`: purpose; SDK alternative considered; official docs read; Dart/Flutter constraints compatible; recent releases and responsive maintainers; license compatible with distribution; known advisories checked; transitive dependencies reviewed; version constraint chosen (caret ranges; commit app lockfile).
+Admission checklist per package, recorded in `DECISIONS.md`: purpose; SDK alternative considered; official docs read; Dart/Flutter constraints compatible; recent releases and responsive maintainers; license compatible with distribution; known advisories checked; transitive dependencies reviewed; version constraint chosen (caret ranges; commit app lockfile). The baseline stack is a default, not a blanket whitelist: a new package may be admitted when it solves a real requirement better than the SDK or an existing dependency and passes every admission check. Do not add packages speculatively, duplicate existing capabilities, or adopt a package solely because an AI agent suggested it. Record rejected alternatives when the decision is non-obvious.
 
 Upgrade policy: upgrade deliberately in a dedicated change (SDK first, then packages), read changelogs/migration guides, run full verification, never blind `pub upgrade --major-versions` in a feature change. Review monthly for security fixes and quarterly for SDK/platform updates. Watch deprecations (analyzer warnings are early signal), and annual platform changes (Android target API and Xcode/iOS SDK requirements for store submission); verify current dates in Google Play and App Store Connect docs.
 
