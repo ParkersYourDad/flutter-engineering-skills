@@ -140,6 +140,7 @@ A gate passes only when each applicable item is observed, not assumed.
 - [M] Critical journeys pass as integration tests on at least one Android and one iOS target, or are reported not verified with reason.
 - [M] Performance measured in profile/release on device against `PERF-*`, or reported not measured.
 - [M] Security checklist, device matrix, dependency audit complete; items needing legal/security review listed.
+- [M] Supabase RLS/authorization tests and Edge Function authentication/abuse tests pass for applicable backend features, or are explicitly reported not verified with a reason.
 
 ### Release Gate
 
@@ -147,6 +148,7 @@ A gate passes only when each applicable item is observed, not assumed.
 - [M] Version/build number bumped; correct environment config; no debug code, test credentials, or verbose logging.
 - [M] Permissions, privacy manifest/data-safety answers, and store metadata match actual behavior.
 - [M] Smoke test release artifact (install, launch, core journey, upgrade-from-previous if applicable).
+- [C] Applicable Supabase migrations are reviewed and applied to the explicitly selected production project; production secrets are configured in Supabase secret storage and never included in release artifacts.
 - [M] Explicit user authorization before publication.
 
 Critical failures block completion. Unresolved high-risk items must be listed in the report.
