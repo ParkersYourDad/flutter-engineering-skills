@@ -70,7 +70,7 @@ A publishable key is not a user identity and is not authorization. A request is 
 - Model startup auth as loading/known signed-out/known signed-in. Do not redirect based on a transient null session before initialization completes.
 - Protect account-owned rows with RLS even when UI routes are guarded. Route guards are UX, not security.
 - Use verified server-side identity for privileged operations. Never authorize from a client-supplied `user_id`, decoded-but-unverified JWT, email string, or user-editable metadata.
-- On sign-out, revoke/sign out through the SDK, clear user-scoped state and subscriptions, and navigate to a safe signed-out route. For sensitive operations requiring immediate revocation, account for already-issued JWT validity and verify session state server-side.
+- On sign-out, revoke/sign out through the SDK, clear user-scoped state and subscriptions, and navigate to a safe signed-out route. For sensitive operations requiring immediate revocation, account for already-issued JWT validity and verify session state server-side. Deleting an Auth user does not by itself guarantee immediate invalidation of every already-issued access token; revoke/sign out sessions first, and for strict immediate-revocation requirements validate the session server-side (for example, against the current session record) before sensitive actions.
 - Deep-link/OAuth callbacks must validate the expected flow and state/PKCE requirements. Test cancelled, expired, replayed, and malformed callbacks.
 
 ## Storage
@@ -134,7 +134,7 @@ The Flutter app must never call Gemini directly with a secret API key. Do not pu
 
 ### Authentication, authorization and abuse controls
 
-- The function accepts a valid signed-in user's JWT by default. Use the current Supabase-recommended user-auth pattern and preserve caller RLS context for user-scoped data. Verify the exact SDK/helper API against current Supabase docs before implementation.
+- The function accepts a valid signed-in user's JWT by default. Use the current Supabase-recommended user-auth pattern and preserve caller RLS context for user-scoped data. Verify the exact SDK/helper API against current Supabase docs before implementation. If the product intentionally has no account system, do not simply disable authentication or rely on the publishable key: pause and design an explicit abuse-resistant anonymous access model with server-side quotas, identity/attestation appropriate to the product, and a documented risk decision.
 - Do not accept a user ID from the request as proof of identity. Derive identity from the verified JWT. Check entitlement/plan and feature permission server-side; UI hiding is not enforcement.
 - Enforce per-user and, where appropriate, per-IP limits; daily/monthly quotas; maximum request bytes; maximum prompt/context size; maximum output tokens; allowed model IDs; execution timeout; and concurrency/budget ceilings.
 - Rate-limit and quota updates must be atomic across function instances. A read-then-write counter without transaction/atomicity is raceable.
@@ -180,7 +180,7 @@ Supabase changes frequently. Before adding/upgrading `supabase_flutter`, Supabas
 5. Implement against the verified API, then run local tests and relevant security checks.
 6. Record material version/architecture choices in `docs/DECISIONS.md`.
 
-As of 2026-11-07, Supabase has announced the v3 Flutter client as a breaking-change prerelease, with stable release planned for 2026-11-11. Do not adopt a v3 prerelease by default; re-check the current stable channel and migration guide when the skill is used.
+As of 2026-11-07, Supabase has announced the v3 Flutter client as a breaking-change prerelease, with stable release planned for 2026-11-11. Do not adopt a v3 prerelease by default; re-check the current stable channel and migration guide when the skill is used. The Supabase CLI v3 announcement (2026-11-04) also changes its default toward local operations and explicit confirmation for hosted changes; always inspect the installed CLI help and explicitly verify the target project/environment before any hosted operation.
 
 ## Official references
 
