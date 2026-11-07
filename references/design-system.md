@@ -13,6 +13,19 @@
 
 ## Direction
 
+## Product craft direction
+
+Use the current Apple Human Interface Guidelines as a quality reference for clarity, craft, hierarchy, feedback, platform familiarity, and accessibility—not as a template to copy. The visual identity must remain original and fit the product's purpose.
+
+The target is a Flutter-owned design system with Apple-level attention to detail:
+- Precise typography, spacing, alignment, optical balance, and content hierarchy.
+- Fast, intentional, interruptible transitions and tactile feedback.
+- Calm surfaces and restrained effects; do not apply blur, translucency, glass, gradients, or shadows by default.
+- Native-feeling iOS interactions while preserving Android expectations. Use shared product logic with platform-specific behavior only where users benefit.
+- Current HIG and Flutter platform-adaptation guidance must be checked for the task; platform guidance and SDK behavior evolve.
+- Do not distribute Apple's San Francisco font files on Android. Use platform system fonts or fonts licensed for every target platform; verify Arabic and Latin glyph coverage.
+- Do not equate an Apple-like appearance with usability. Verify actual tasks, accessibility, and rendered behavior.
+
 Premium, minimal, modern, soft, refined, with iOS-quality fit and finish. Hierarchy comes from typography, spacing, and whitespace, not boxes. Rounded geometry follows one consistent radius logic. Restraint is the design: few colors, few weights, subtle depth.
 
 Avoid cards for everything, card-in-card, borders on everything, heavy shadows, random gradients, decorative noise, inconsistent radii, and template-looking screens. Do not impose one identity on every app; the system is a refined neutral foundation that brands override through configuration.
@@ -106,6 +119,14 @@ Motion tokens in `tokens/motion`: durations (instant ~100 ms, fast ~200, base ~3
 - Performance: animate transforms/opacity rather than layout where possible; scope rebuilds with `AnimatedBuilder.child`; add `RepaintBoundary` only when profiling shows benefit. Verify in profile mode on a real device when available; otherwise report not verified on device.
 
 ## Governance
+
+Official guidance to consult when relevant:
+- Apple Human Interface Guidelines: https://developer.apple.com/design/human-interface-guidelines/
+- Apple design principles: https://developer.apple.com/design/human-interface-guidelines/design-principles/
+- Apple motion guidance: https://developer.apple.com/design/human-interface-guidelines/motion
+- Apple layout guidance: https://developer.apple.com/design/human-interface-guidelines/layout
+- Flutter adaptive and responsive design: https://docs.flutter.dev/ui/adaptive-responsive
+- Flutter platform adaptations: https://docs.flutter.dev/ui/adaptive-responsive/platform-adaptations
 
 - Token naming is semantic (`textSecondary`), never appearance-based (`grey500`) in feature-facing APIs. One definition per value; adding a token requires proving no existing token fits.
 - Changes to `design_system/` require review for API consistency and cross-app impact.
