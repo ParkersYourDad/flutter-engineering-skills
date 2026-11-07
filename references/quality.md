@@ -242,6 +242,7 @@ A gate passes only when each applicable item is observed, not assumed.
 ### Component Gate
 
 - [M] Spec/state model documented; applicable states and variants implemented.
+- [M] For components intended for cross-feature/app reuse, the `references/design-system-component-contract.md` is completed and its applicable acceptance rows have evidence; screen-local widgets are exempt from a standalone contract.
 - [M] Tokens only; no hardcoded colors/sizes/durations/strings.
 - [M] Widget tests cover public defaults, variants, applicable states, callbacks, duplicate activation, and semantics.
 - [M] Interactive controls have verified focus/keyboard or assistive activation paths where applicable; hit targets and contrast checks pass.
