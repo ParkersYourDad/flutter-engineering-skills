@@ -53,11 +53,26 @@ Measure, do not assume. Never say optimized without numbers.
 - Check release-only behavior (minification, `--obfuscate --split-debug-info`) with release build, not only debug.
 - Lifecycle: handle pause/resume (refresh stale data, pause streams/timers), low memory (drop caches), connectivity changes.
 
+## Backend security (Supabase and Gemini)
+
+Apply `backend-supabase.md` to every backend feature. The following are release-blocking controls:
+
+- [M] Every table in an exposed schema has RLS enabled before client access is granted. Policies enforce ownership/tenant/role authorization per operation; `TO authenticated` alone is not authorization.
+- [M] Every view is reviewed for RLS behavior; use security-invoker semantics where supported or restrict exposure. Review every privileged SQL function for SECURITY DEFINER and EXECUTE grants.
+- [M] No Supabase secret/service-role key or Gemini API key exists in Flutter source, assets, build defines, CI artifacts, logs, or Git history. Client receives only the project URL and publishable key.
+- [M] Edge Functions that serve signed-in users validate the user JWT and authorize the requested resource. Keep platform JWT verification enabled unless a documented webhook/service-to-service design requires otherwise; `apikey` alone is not user authentication.
+- [M] Gemini calls occur only in Edge Functions. Secrets are configured in Supabase secret storage; local secret files are ignored by Git. Apply per-user quotas/rate limits, input validation, bounded output/token limits, timeouts, and safe error mapping.
+- [M] No `service_role`/secret-key database access is used for ordinary user requests; use the caller-scoped client and RLS. Any privileged path has explicit authorization, narrow scope, and tests.
+- [M] Migrations are versioned, reviewed, and tested against a local/staging database before production. Verify RLS policies as anon, authenticated owner, and authenticated non-owner where applicable.
+- [M] Gemini request limits and quotas use atomic shared state, not in-memory per-instance counters; provider costs and abuse are monitored.
+
 ## Security and privacy
 
 Baseline: OWASP MASVS (and MASTG for test technique). This is not legal/compliance certification; flag items for qualified legal/security review (privacy policy text, GDPR/CCPA/regional laws, children's data, payments, health).
 
 - [M] No secrets or signing material in source control; do not assume client binaries can protect secrets.
+- [M] Supabase publishable key may be embedded in a client only because it is designed to be public; it grants no data access without correct grants and RLS. Never embed secret/service-role keys.
+- [M] Gemini API key exists only in Supabase Edge Function secrets (e.g. `GEMINI_API_KEY`) and is read at runtime; never use `--dart-define`, `.env` bundled into Flutter, Remote Config, or obfuscation as a secret store.
 - [M] Tokens only in secure storage; clear on sign-out; no sensitive data in prefs, logs, crash reports, or task-switcher screenshots where relevant (consider `FLAG_SECURE`/blur on sensitive screens).
 - [M] HTTPS only; no cleartext (`usesCleartextTraffic` off outside dev; iOS ATS not weakened); no permissive `badCertificateCallback`.
 - [M] Validate/sanitize external input (forms, deep-link params, server data); treat deep links/intents as untrusted.
@@ -67,6 +82,7 @@ Baseline: OWASP MASVS (and MASTG for test technique). This is not legal/complian
 - [M] iOS: Privacy Manifest and usage-description strings are accurate, including third-party SDKs; choose Keychain accessibility deliberately.
 - [C] Certificate pinning, biometric auth, root/jailbreak detection only when required (ADR).
 - [M] Dependency vulnerability check at each upgrade/release (pub.dev advisories, `flutter pub outdated`, GitHub Dependabot where available).
+- [M] Supabase SDK and CLI changelogs checked for breaking changes before upgrades; use stable SDK releases by default and explicitly reject prereleases unless justified in an ADR.
 - [C] Account creation requires in-app account deletion; third-party social login on iOS may require Sign in with Apple. Verify current App Store rules before release.
 
 ## Dependencies and upgrades
