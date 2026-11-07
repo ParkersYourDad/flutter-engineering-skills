@@ -27,3 +27,6 @@ jobs:
 
       - name: Validate skills
         run: python3 scripts/validate_skills.py
+
+      - name: Check RTL directionality in Dart source
+        run: python3 scripts/check_rtl_directionality.py
