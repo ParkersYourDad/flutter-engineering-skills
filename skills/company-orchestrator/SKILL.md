@@ -72,7 +72,7 @@ Assign one accountable owner per deliverable. Parallelize only when interfaces a
 
 ### 4. Design and architecture before implementation
 
-For user-facing work, design the flow and interaction states before coding. For reusable design-system components, agree on semantic API, state model, token dependencies, platform behavior, accessibility, motion, and verification evidence using `references/design-system-component-contract.md` before implementation. Do not impose this artifact on screen-local widgets. For structural work, agree on ownership, dependencies, API contracts, migration strategy, and failure behavior. Security, accessibility, localization, and performance specialists review early enough to influence the design.
+For user-facing work, design the flow and interaction states before coding. For reusable design-system components, agree on semantic API, state model, token dependencies, platform behavior, accessibility, motion, and verification evidence using `references/design-system-component-contract.md` before implementation. Do not impose this artifact on screen-local widgets. For structural work, agree on ownership, dependencies, API contracts, migration strategy, and failure behavior. Security, accessibility, localization, and performance specialists review early enough to influence the design. Any new analytics, crash-reporting, logging, tracing, attribution, or support SDK must receive Security review before integration, including automatic collection, data destinations, retention/deletion, consent, and release-build behavior. Define the telemetry event/property contract before implementation.
 
 ### 5. Implementation
 
