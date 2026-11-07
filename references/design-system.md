@@ -70,7 +70,7 @@ Every shared component:
 - Works in light/dark, LTR/RTL, text scale up to 2.0×, and with long/empty content without overflow.
 - Meets the Component Gate in `quality.md`.
 
-Process: spec → API → implementation → tests → accessibility → visual verification → docs (dartdoc + one usage example) → mark reusable. Search `components/` for an equivalent first; extend with a variant rather than clone. Deprecate with `@Deprecated` + one-version migration path; breaking API changes need a `DECISIONS.md` entry.
+Process: spec → API → implementation → tests → accessibility → visual verification → docs (dartdoc + one usage example) → mark reusable. For a component intended for reuse across features or apps, complete the [Reusable Design-System Component Contract](design-system-component-contract.md); screen-local widgets do not need a separate contract document. Search `components/` for an equivalent first; extend with a variant rather than clone. Deprecate with `@Deprecated` + one-version migration path; breaking API changes need a `DECISIONS.md` entry.
 
 ## Reusable component implementation contract
 
@@ -110,7 +110,7 @@ A component should not own network requests, business mutations, analytics polic
 
 ### Component test recipe
 
-A reusable component should have focused tests for:
+A reusable component should have focused tests mapped to its completed [component contract](design-system-component-contract.md):
 1. Public API defaults and each supported variant.
 2. Applicable enabled/disabled/loading/selected/error/focus states.
 3. User action, duplicate activation prevention, and callback count.
