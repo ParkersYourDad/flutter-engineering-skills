@@ -8,8 +8,8 @@ description: Measures and improves Flutter mobile startup, frame rendering, scro
 ## Shared standards
 
 Use these repository-level documents as the single source of truth. Do not copy their checklists into this skill or create conflicting local variants:
-- [quality.md] (../../references/quality.md)
-- [pitfalls.md] (../../references/pitfalls.md)
+- [quality.md](../../references/quality.md)
+- [pitfalls.md](../../references/pitfalls.md)
 
 ## Mission
 
