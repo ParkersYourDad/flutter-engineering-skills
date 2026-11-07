@@ -53,6 +53,40 @@ Keep the project's selected lint rules in the same file (or a deliberately inclu
 - [R] Review newly introduced `dynamic`, raw collection types, unchecked casts, and broad `Object?` conversions during code review.
 
 
+## Risk-based task sizing and verification
+
+Classify the change by its highest credible impact, not by the number of files or lines. Reassess when discovery or implementation exposes a new risk. The tiers select the minimum verification depth; they never waive a directly applicable security, accessibility, platform, or release requirement.
+
+| Tier | Typical scope and triggers | Minimum workflow and evidence |
+|---|---|---|
+| **T0 — Documentation / metadata** | Documentation-only, comments, skill/reference content, non-executable configuration with no runtime behavior change. | Inspect affected links/references; run the relevant repository validator or syntax check. Do not run Flutter builds/tests when no app code or build configuration changed. |
+| **T1 — Bounded app change** | Isolated screen-local UI, copy/layout adjustment, small local bug fix with no shared API, persistence, network, auth, or platform boundary change. | Inspect surrounding implementation; format, analyze, run focused tests; verify relevant screen states, semantics, locale/direction and text scaling when UI is affected. |
+| **T2 — Shared or cross-layer change** | Reusable component, shared state/data flow, routing, persistence, networking, lifecycle, localization foundation, dependency/toolchain, or architecture boundary. | Define acceptance criteria and affected contracts; load the relevant specialist(s); add regression and boundary tests; run the applicable broader suite and platform checks. Reusable components use the component contract. |
+| **T3 — Critical / high-consequence change** | Authentication/authorization, sensitive or regulated data, payments, destructive operations, external AI/data transfer, cryptography, permissions, native exported surfaces, production migrations, signing/release, or incident response. | T2 workflow plus threat/abuse analysis, negative tests, explicit data/consent and recovery behavior where relevant, security review, and release/rollback controls. Obtain human authorization for legally, financially, or operationally consequential decisions. |
+
+### Specialist activation triggers
+
+- **Product Discovery:** unclear users, problem, scope, monetization, or product behavior; do not use it to re-ask settled requirements.
+- **Architecture:** new or changed ownership, dependency direction, API/data contract, migration, persistence model, or cross-feature state.
+- **Design craft:** user-visible flow, interaction, motion, shared UI, or design-system behavior; omit for non-visual backend-only work.
+- **Accessibility/localization:** any user-facing text, layout, input, navigation, semantics, system setting, or shared component change; verify the affected dimensions rather than mechanically rerunning every locale/device combination.
+- **Security:** auth/authz, sensitive data, external data transfer, third-party SDK, secrets, permissions, deep links/intents, uploads, privileged backend operations, or production security configuration.
+- **Performance/reliability:** measured issue or credible risk involving startup, complex/continuous animation, large/rapidly changing lists, media, expensive local work, frequent updates, background work, memory, battery, or latency-sensitive journeys.
+- **QA:** independent acceptance for T2/T3, shared components, critical journeys, regressions, or when implementation evidence alone is insufficient. For T0/T1, targeted verification may be sufficient.
+- **Native integration:** platform API, plugin, channel, manifest/entitlement, lifecycle, background execution, or OS-specific behavior.
+- **Release operations:** CI/CD, signing, store delivery, production deployment/migration, monitoring, incident handling, or recovery.
+
+### Selection rules
+
+- Always inspect the affected code and existing project conventions first; never infer tier from a request title alone.
+- Load the smallest set of references and specialists that covers the identified risks. A specialist can be consulted for a narrow review without invoking the entire company workflow.
+- One change may activate multiple specialists; shared ownership does not mean duplicate implementation. Assign one implementation owner and separate reviewers for critical gates where available.
+- Do not invoke a formal security/performance/release review merely because a skill exists. Require a listed trigger or an observed issue.
+- Do not downgrade a task to avoid a failing gate. Record N/A only with a reason; record unavailable device, platform, account, or environment evidence as Not verified/Blocked.
+- If the task changes tier, update acceptance criteria and verification before continuing; do not silently carry forward the lighter plan.
+
+## Testing
+
 ## Testing
 
 Test behavior and requirements by risk. Do not chase coverage percentages or test implementation details.
