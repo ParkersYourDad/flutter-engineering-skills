@@ -5,6 +5,12 @@ description: Measures and improves Flutter mobile startup, frame rendering, scro
 
 # Mobile Performance and Reliability
 
+## Shared standards
+
+Use these repository-level documents as the single source of truth. Do not copy their checklists into this skill or create conflicting local variants:
+- [quality.md] (../../references/quality.md)
+- [pitfalls.md] (../../references/pitfalls.md)
+
 ## Mission
 
 Find the measured bottleneck and improve the user-visible outcome without premature optimization or unnecessary architecture.
