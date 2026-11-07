@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import re
-import sys
+from typing import Dict, List, Optional, Tuple
 from pathlib import Path
 from urllib.parse import unquote
 
@@ -13,8 +13,8 @@ NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 LINK_RE = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 
 
-def read_frontmatter(path: Path) -> tuple[str | None, str | None, list[str]]:
-    errors: list[str] = []
+def read_frontmatter(path: Path) -> Tuple[Optional[str], Optional[str], List[str]]:
+    errors: List[str] = []
     try:
         lines = path.read_text(encoding="utf-8").splitlines()
     except OSError as exc:
@@ -28,7 +28,7 @@ def read_frontmatter(path: Path) -> tuple[str | None, str | None, list[str]]:
     except ValueError:
         return None, None, [f"{path.relative_to(ROOT)}: unterminated YAML frontmatter"]
 
-    fields: dict[str, str] = {}
+    fields: Dict[str, str] = {}
     for line in lines[1:end]:
         if not line.strip() or line.lstrip().startswith("#"):
             continue
@@ -54,7 +54,7 @@ def read_frontmatter(path: Path) -> tuple[str | None, str | None, list[str]]:
     return name, description, errors
 
 
-def check_local_links(path: Path) -> list[str]:
+def check_local_links(path: Path) -> List[str]:
     errors: list[str] = []
     text = path.read_text(encoding="utf-8")
     for raw_target in LINK_RE.findall(text):
@@ -89,7 +89,7 @@ def main() -> int:
     if not (ROOT / "skills").is_dir():
         errors.append("skills/: directory is missing")
 
-    seen_names: dict[str, Path] = {}
+    seen_names: Dict[str, Path] = {}
     for path in skill_files:
         name, _description, file_errors = read_frontmatter(path)
         errors.extend(file_errors)
