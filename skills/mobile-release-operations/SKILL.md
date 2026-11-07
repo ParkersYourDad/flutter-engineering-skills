@@ -8,9 +8,9 @@ description: Owns Flutter Android/iOS build pipelines, flavors, signing, CI/CD, 
 ## Shared standards
 
 Use these repository-level documents as the single source of truth. Do not copy their checklists into this skill or create conflicting local variants:
-- [quality.md] (../../references/quality.md)
-- [workflow.md] (../../references/workflow.md)
-- [backend-supabase.md] (../../references/backend-supabase.md)
+- [quality.md](../../references/quality.md)
+- [workflow.md](../../references/workflow.md)
+- [backend-supabase.md](../../references/backend-supabase.md)
 
 ## Mission
 
