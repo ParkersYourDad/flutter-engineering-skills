@@ -91,6 +91,7 @@ Read when debugging, reviewing, or before declaring a feature done. Each row des
 | Stale secure data after reinstall/restore | First-run marker; catch read failures | Clear + re-auth; test recovery |
 | Persisted schema changed without migration | Version persisted schema | Migration or safe reset; upgrade test |
 | Connectivity mistaken for reachability | Treat request failures as signal | Handle in repository + error UI |
+| Network performance judged by ping or a single happy-path request | Measure end-to-end request P50/P95, request count, payload bytes, retries, and slow-network behavior | Remove duplicate/unbounded requests; paginate and cache only where semantics permit; add a regression measurement |
 
 ## Localization and accessibility
 
