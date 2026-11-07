@@ -5,6 +5,13 @@ description: Designs, implements, and reviews Supabase/PostgreSQL backends for F
 
 # Supabase Backend Engineering
 
+## Shared standards
+
+Use these repository-level documents as the single source of truth. Do not copy their checklists into this skill or create conflicting local variants:
+- [backend-supabase.md] (../../references/backend-supabase.md)
+- [quality.md] (../../references/quality.md)
+- [pitfalls.md] (../../references/pitfalls.md)
+
 ## Mission
 
 Build a secure, maintainable backend for the actual product requirements. Supabase is the default backend choice where a backend is required; it is not a mandate to create services for a local-only product.
