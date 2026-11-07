@@ -152,6 +152,10 @@ Read when debugging, reviewing, or before declaring a feature done. Each row des
 | allowBackup/exported activities/cleartext left unsafe | Manifest review in release gate | Fix manifest; release-build check |
 | Deep-link/server input trusted | Validate and parse all external input | Add validation + tests |
 | Full request/response logged in release | Debug-only redacting logger | Gate by build mode; test redaction |
+| Analytics captures form fields, prompts, URLs, or identifiers by default | Explicit event/property allowlist; inspect SDK auto-capture | Disable unnecessary auto-capture; add recording-sink privacy tests |
+| Crash reports contain tokens or user content | Scrub before SDK submission; avoid local-variable/request-body capture | Sentinel PII/secret tests against the final crash payload |
+| Events from a previous account upload after sign-out | Scope/clear queued events and identity on account change | Switch accounts offline, reconnect, and assert correct attribution or discard |
+| Analytics event becomes the source of truth for a payment/action | Persist authoritative state in backend/domain transaction | Reconcile from server records; analytics is observability only |
 | Permissions requested at launch | Ask in context; denial path | Add rationale/denied/settings flows |
 | Missing iOS privacy manifest/usage strings | Release gate; inspect app and included SDK manifests/required-reason APIs | Add accurate declarations and verify the archived release bundle |
 | RLS policies exist but table grants or API exposure are too broad | Review effective grants and exposed schemas as well as policies | Revoke unnecessary grants; add least-privilege grants in a migration and test each operation |
