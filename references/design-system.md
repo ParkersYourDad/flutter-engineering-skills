@@ -72,6 +72,57 @@ Every shared component:
 
 Process: spec → API → implementation → tests → accessibility → visual verification → docs (dartdoc + one usage example) → mark reusable. Search `components/` for an equivalent first; extend with a variant rather than clone. Deprecate with `@Deprecated` + one-version migration path; breaking API changes need a `DECISIONS.md` entry.
 
+## Reusable component implementation contract
+
+Treat this as a decision and review contract, not a mandate to create every component family or one universal widget API.
+
+### Public API and ownership
+
+- Keep public APIs small and task-oriented. Prefer named constructors or a small enum for genuinely different semantic variants; do not expose a boolean for every visual option.
+- Separate semantic intent from rendering: a button exposes its action, label/content, and meaningful variant; the shared foundation owns pressed/focus/hover feedback, hit testing, semantics, and the configured haptic policy.
+- Keep transient interaction state local to the component unless another part of the product must observe it. Business state and asynchronous operation ownership remain with the feature/state layer.
+- Use explicit slots only where composition is a real requirement (for example leading/trailing content); avoid turning every component into a generic layout framework.
+- Define disabled, loading, and read-only behavior explicitly. A loading action must prevent duplicate activation without unexpectedly changing its layout or losing its accessible name.
+- Keep localization outside component internals: accept localized text/semantics from the caller or use a clearly documented localization contract. Never hardcode user-facing strings in shared components.
+- Inject platform effects such as haptics behind a narrow service boundary when they need deterministic tests. Do not introduce a service abstraction for effects that are not used or cannot vary meaningfully.
+
+### Interaction and motion contract
+
+For each animated or interactive component, record only the applicable items:
+- Trigger and semantic purpose; what user-visible state changes.
+- Duration/curve token or gesture physics; no per-feature magic values.
+- Initial, target, interrupted, reversed, cancelled, and disposed behavior.
+- Reduced-motion behavior that preserves the same information and action.
+- Focus, keyboard, screen-reader, and non-gesture operation.
+- Haptic event and platform behavior, if any; haptics occur once after the semantic action is committed, never during build or animation ticks.
+- Loading, failure, and retry behavior where the component owns or represents an asynchronous action.
+
+A component should not own network requests, business mutations, analytics policy, or navigation decisions merely to make its API convenient.
+
+### Reusable implementation patterns
+
+- **Action controls:** compose a shared pressable foundation with visual variants. Keep the interactive/semantic node singular; avoid nested gesture detectors that compete for the same tap.
+- **Async content:** keep request/state ownership outside the visual state presenter. A shared state view may map explicit loading/error/empty/data states, but callers provide the empty predicate and recovery action.
+- **Skeletons:** provide a small set of tokenized shapes or composition primitives only when repeated layouts justify them. Do not build a universal skeleton tree or force shimmer.
+- **Shared-element transitions:** keep Hero at route/content composition boundaries, not buried inside a generic card/button. The feature supplies stable object identity and a fallback.
+- **Typography:** expose semantic text roles and controlled emphasis, not arbitrary per-feature style construction. Verify actual Arabic glyph metrics and mixed-script wrapping with the bundled font.
+- **Directional visuals:** expose semantic direction or use Flutter's directional APIs; decide mirroring from meaning, not from whether an icon happens to point left or right.
+
+### Component test recipe
+
+A reusable component should have focused tests for:
+1. Public API defaults and each supported variant.
+2. Applicable enabled/disabled/loading/selected/error/focus states.
+3. User action, duplicate activation prevention, and callback count.
+4. Semantics (label, role, value, enabled/selected state, and announcements where applicable).
+5. Keyboard/focus and non-gesture activation where the control supports them.
+6. Light/dark, LTR/RTL, long content, and text scaling; test the largest relevant platform setting in addition to the 2.0× engineering baseline when practical.
+7. Reduced motion: assert the alternate behavior or absence of ongoing animation, not a screenshot alone.
+8. Haptics through an injected fake/recording adapter when the component emits them; assert semantic event and exactly-once behavior. Do not claim physical vibration was tested by a widget test.
+9. Golden tests only where stable visual regression coverage adds value; keep behavioral assertions independent of goldens.
+
+For Hero/shared-element behavior, use route-level tests for identity, navigation interruption, and fallback. A widget test that merely finds a Hero is not proof of a correct flight animation. Verify real platform gesture and visual behavior manually on target devices when that behavior is part of acceptance.
+
 ## Component checklist
 
 Build a component only when a requirement needs it. In addition to the contract:
