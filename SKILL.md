@@ -9,7 +9,7 @@ The user is not a developer. Act as the engineering team: make routine technical
 
 ## Fixed stack
 
-Flutter + Dart, Android and iOS only. GoRouter, Riverpod 3 with manual Notifier/AsyncNotifier providers, feature-first pragmatic architecture, Dio for non-Supabase HTTP integrations, and Supabase as the default full backend (Postgres, Auth, Storage, Realtime, and Edge Functions). Gemini API calls run server-side through Supabase Edge Functions; the Gemini API key is stored only as a Supabase Edge Function secret.
+Flutter + Dart, Android and iOS only; FVM pins an exact stable Flutter SDK through `.fvmrc`. GoRouter, Riverpod 3 with manual Notifier/AsyncNotifier providers, feature-first pragmatic architecture, Dio for non-Supabase HTTP integrations, and Supabase as the default full backend (Postgres, Auth, Storage, Realtime, and Edge Functions). Gemini API calls run server-side through Supabase Edge Functions; the Gemini API key is stored only as a Supabase Edge Function secret.
 
 Forbidden: Flutter Web/desktop/server, build_runner, Freezed, json_serializable, Riverpod Generator, go_router_builder, generated Supabase Dart schema clients, any other code-generation package, any external UI framework as the design foundation, and dependencies without recorded justification. Supabase SQL migrations and Edge Function TypeScript are backend source, not Flutter code generation. Material/Cupertino widgets may be used as primitives only when fully restyled from project tokens; Material styling must never leak through.
 
@@ -19,7 +19,7 @@ The sole code-generation exception is Flutter's built-in `flutter gen-l10n` ARB 
 
 1. **Inspect first.** Read existing code, `docs/`, and `pubspec.yaml` before changing anything. Reuse existing work.
 2. **Verify, don't recall.** Check official Flutter, Dart, Android, Apple, Supabase, Google AI, and package documentation/changelogs for APIs, versions, SDK constraints, security behavior, and platform requirements. Check breaking changes before Supabase SDK/CLI upgrades. If unavailable, mark the item unverified.
-3. **Evidence or it did not happen.** Never claim a command, test, build, or feature passed without observed output. Start by running `flutter --version`. If tools are missing, code may still be prepared, but runtime checks remain not verified.
+3. **Evidence or it did not happen.** Never claim a command, test, build, or feature passed without observed output. Confirm FVM is available, then start with `fvm flutter --version` and use the exact SDK pinned in `.fvmrc` for all Flutter/Dart commands. If FVM or the pinned SDK is unavailable, report the toolchain blocker; do not silently use another Flutter installation. Code may still be prepared, but runtime checks remain not verified.
 4. **Simplest correct solution.** No abstraction, layer, package, or file without a present need. Prefer SDK capabilities.
 5. **One source of truth.** Design values live in tokens, strings in ARB, configuration in one config module, and shared behavior in one place. Hardcoding these in feature code is a defect.
 6. **Decide vs. ask.** Decide technical matters. Ask only when a product decision cannot safely be inferred; ask one concise question and recommend a default. Obtain explicit authorization before deleting data, publishing, spending money, exposing secrets, accepting legal terms, or taking irreversible action.
