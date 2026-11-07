@@ -48,11 +48,12 @@ A publishable key is not a user identity and is not authorization. A request is 
 - Migrations must be repeatable in a clean local database and have a considered forward-recovery/rollback plan. Destructive migrations require explicit approval and a backup/recovery plan.
 - Keep seed data deterministic and free of real user data, production secrets, and credentials.
 - Avoid schema-per-feature sprawl, premature generic tables, and storing structured relational data as arbitrary JSON without a demonstrated need.
+- Before production stores important user data, define the backup/restore approach appropriate to its value and service plan; test a restore or recovery procedure. Do not claim disaster recovery from the existence of backups alone.
 
 ### RLS and grants
 
 - Enable RLS on every table in an exposed schema (especially `public`) before granting client roles access.
-- Grant only the required table/function privileges to `anon` and/or `authenticated`. RLS controls rows; grants control whether the role can access the table/API at all. Both are required.
+- Grant only the required table/function privileges to `anon` and/or `authenticated`. RLS controls rows; grants control whether the role can access the table/API at all. Both are required. Do not assume enabling RLS revokes existing/default grants or removes a schema from Data API exposure; inspect effective grants and API exposure for every exposed schema, and keep grant changes in migrations.
 - Write policies per operation (`SELECT`, `INSERT`, `UPDATE`, `DELETE`) and per actual access model: owner, tenant, role, public read, or another explicit rule. Never copy a generic `auth.uid() = user_id` policy onto tables whose ownership model differs.
 - For private user rows, derive identity from the verified session with `(select auth.uid())`; do not trust a client-supplied user ID.
 - An `authenticated` role check alone is not authorization. Include the ownership/tenant predicate needed to prevent BOLA/IDOR and cross-tenant access.
@@ -61,7 +62,7 @@ A publishable key is not a user identity and is not authorization. A request is 
 - Do not use deprecated `auth.role()` checks. Target roles with policy `TO anon` / `TO authenticated` and verify the real identity/ownership separately.
 - Views can bypass RLS by default. On supported Postgres versions use `security_invoker = true`; otherwise restrict access or place the view in a non-exposed schema.
 - Avoid `SECURITY DEFINER` functions. If genuinely necessary, keep them out of exposed schemas, restrict EXECUTE grants, validate caller identity and inputs inside the function, document why RLS bypass is required, and run Supabase security advisors.
-- Test policies with at least: anonymous caller, authenticated owner, authenticated non-owner, and cross-tenant caller where tenancy exists. Include negative tests; a successful owner query alone is insufficient.
+- Add SQL database tests under `supabase/tests/` for each exposed table and operation (`SELECT`, `INSERT`, `UPDATE`, `DELETE`): expected allow and deny cases for anon/authenticated, owner/non-owner, and cross-tenant users where applicable. Run the current documented `supabase test db` workflow; a successful owner query alone is insufficient.
 - Verify the Data API exposure settings and explicit grants when a table is unexpectedly unavailable. Do not weaken RLS to work around a missing grant.
 
 ## Auth
@@ -94,6 +95,8 @@ A publishable key is not a user identity and is not authorization. A request is 
 ## Edge Functions
 
 Use Edge Functions for trusted server-side operations: Gemini calls, third-party secrets, webhooks, privileged workflows, and logic that must not run in a mobile client. Keep functions small and focused; do not create one function per trivial database operation.
+
+- Current Supabase guidance uses `@supabase/server` v1's `withSupabase({ auth: 'user' })` pattern for authenticated request handlers; use the supplied `ctx.supabase` caller-scoped client for user data so RLS applies. Verify the current package/runtime import and migration notes before implementation (for Deno, current examples use `npm:@supabase/server@1`). Use `ctx.supabaseAdmin` only for a reviewed privileged operation. Do not start new code on deprecated framework adapters; the package's current guidance schedules their removal for December 1, 2026. If this pattern changes, follow the current official docs rather than copying an old snippet.
 
 - Keep user-facing functions authenticated by default. Leave platform JWT verification enabled unless a documented webhook/service-to-service use case requires a different verification path.
 - A valid JWT proves identity, not permission to access every resource. Derive the user from verified claims and authorize every requested record/action. Prefer a caller-scoped Supabase client that preserves RLS.
@@ -158,7 +161,7 @@ The Flutter app must never call Gemini directly with a secret API key. Do not pu
 
 - [M] Project URL and publishable key are the only Supabase credentials present in the mobile app.
 - [M] No secret/service-role/Gemini key appears in source, build output, Git history, logs, or test fixtures.
-- [M] Every exposed table has RLS enabled and least-privilege grants; operation-specific policies are tested.
+- [M] Every exposed table has RLS enabled, least-privilege grants, and deliberate Data API exposure; SQL tests cover allow/deny behavior for each applicable CRUD operation and role, and `supabase test db` passes.
 - [M] Cross-user and cross-tenant negative authorization tests pass.
 - [M] Migrations rebuild a clean local database and are reviewed before staging/production.
 - [M] Auth lifecycle, sign-out cleanup, and account switching are tested when Auth is used.
@@ -189,6 +192,9 @@ As of 2026-11-07, Supabase has announced the v3 Flutter client as a breaking-cha
 - Supabase API security and RLS: https://supabase.com/docs/guides/api/securing-your-api
 - Supabase Edge Function secrets: https://supabase.com/docs/guides/functions/secrets
 - Supabase Edge Function authentication: https://supabase.com/docs/guides/functions/auth
+- Supabase server-side request authentication package: https://supabase.com/docs/reference/server/usage-examples
+- Supabase RLS testing and grants: https://supabase.com/docs/guides/database/postgres/row-level-security
+- Supabase database migration deployment: https://supabase.com/docs/guides/deployment/database-migrations
 - Supabase Authorization headers: https://supabase.com/docs/guides/functions/auth-headers
 - Supabase breaking changes: https://supabase.com/changelog?types=breaking-change
 - Supabase Flutter package versions: https://pub.dev/packages/supabase_flutter
