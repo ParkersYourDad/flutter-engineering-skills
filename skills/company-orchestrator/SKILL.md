@@ -33,6 +33,8 @@ Turn a product goal into coordinated, evidence-backed work across specialist rol
 | Visual direction, UX flows, Apple-inspired polish, interactions, design system | skills/apple-product-craft/SKILL.md |
 | System boundaries, architecture, API contracts, technical decisions | skills/flutter-architecture/SKILL.md |
 | Flutter/Dart implementation | Root SKILL.md |
+| Native iOS/Android APIs, plugins, platform channels | skills/native-platform-integration/SKILL.md (only when needed) |
+| AI model, RAG, prompt, evaluation, tool-use quality | skills/ai-product-engineering/SKILL.md (only for AI features) |
 | Supabase, PostgreSQL, RLS, Edge Functions, Gemini integration | skills/supabase-backend-engineering/SKILL.md |
 | Accessibility, localization, Arabic/RTL, platform settings | skills/accessibility-localization/SKILL.md |
 | Independent test strategy and product acceptance | skills/mobile-qa-engineering/SKILL.md |
