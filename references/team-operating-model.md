@@ -26,6 +26,8 @@ Do not begin implementation when a missing requirement could change data ownersh
 | Apple product craft | UX/UI quality, interaction design, visual system, platform fit | Product requirements, backend authorization |
 | Architecture | Boundaries, contracts, data flow, technical decisions | Feature implementation or independent approval |
 | Flutter engineering | Dart/Flutter implementation and maintainability | Approving its own critical security or release gates |
+| Native platform integration | Swift/Kotlin host APIs, channels, plugins, permissions, lifecycle | Replacing Flutter feature architecture or duplicating business logic |
+| AI product engineering | Model quality, evaluation, RAG, prompt/tool contracts, AI safety and cost | Backend secrets, authorization, or legal approval |
 | Backend engineering | Database, APIs, Edge Functions, backend behavior | Client-only authorization decisions |
 | Accessibility/localization | Accessible interaction, language, RTL, platform settings | Removing product requirements to simplify tests |
 | QA | Independent verification against acceptance criteria | Silently changing expected product behavior |
