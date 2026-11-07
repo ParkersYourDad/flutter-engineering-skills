@@ -8,9 +8,9 @@ description: Performs independent threat modeling and security reviews for Flutt
 ## Shared standards
 
 Use these repository-level documents as the single source of truth. Do not copy their checklists into this skill or create conflicting local variants:
-- [quality.md] (../../references/quality.md)
-- [backend-supabase.md] (../../references/backend-supabase.md)
-- [pitfalls.md] (../../references/pitfalls.md)
+- [quality.md](../../references/quality.md)
+- [backend-supabase.md](../../references/backend-supabase.md)
+- [pitfalls.md](../../references/pitfalls.md)
 
 ## Mission
 
