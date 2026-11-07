@@ -48,12 +48,13 @@ def main() -> int:
             for match in pattern.finditer(source):
                 start_line = line_number(source, match.start())
                 end_line = line_number(source, match.end() - 1)
-                covered_lines = range(start_line, end_line + 1)
-                ignored = any(
-                    1 <= number <= len(lines)
-                    and IGNORE_MARKER in lines[number - 1]
-                    and lines[number - 1].split(IGNORE_MARKER, 1)[1].strip()
-                    for number in covered_lines
+                # For constructor arguments, the exception belongs beside the
+                # physical argument (the match's final line), not elsewhere in
+                # a multi-line constructor.
+                exception_line = lines[end_line - 1] if 1 <= end_line <= len(lines) else ""
+                ignored = (
+                    IGNORE_MARKER in exception_line
+                    and bool(exception_line.split(IGNORE_MARKER, 1)[1].strip())
                 )
                 if ignored:
                     continue
