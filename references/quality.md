@@ -243,9 +243,14 @@ A gate passes only when each applicable item is observed, not assumed.
 
 - [M] Spec/state model documented; applicable states and variants implemented.
 - [M] Tokens only; no hardcoded colors/sizes/durations/strings.
-- [M] Widget tests for states; semantics + tap-target + contrast checks pass.
-- [M] Verified light/dark, LTR/RTL, text scale 2.0, long/empty content.
-- [M] Golden (if valuable) reviewed; dartdoc + usage example; no duplicate component.
+- [M] Widget tests cover public defaults, variants, applicable states, callbacks, duplicate activation, and semantics.
+- [M] Interactive controls have verified focus/keyboard or assistive activation paths where applicable; hit targets and contrast checks pass.
+- [M] Verified light/dark, LTR/RTL, text scale 2.0, long/empty content; test the largest practical OS text setting for critical/shared controls.
+- [M] Reduced-motion behavior is asserted for animated components; tests prove state/behavior, not only a static screenshot.
+- [C] If haptics are emitted, an injected fake verifies semantic event and exactly-once timing. Physical vibration remains device-level verification.
+- [C] If Hero/shared-element transitions are used, route-level tests cover object identity, interruption, and fallback; actual platform gesture/flight behavior is manually verified on target devices when required.
+- [C] If skeleton/shimmer is used, verify geometry against final content, no material layout shift, and reduced-motion behavior.
+- [C] Golden (if valuable) reviewed; dartdoc + usage example; no duplicate component.
 
 ### Feature Gate
 
