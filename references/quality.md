@@ -262,6 +262,17 @@ A gate passes only when each applicable item is observed, not assumed.
 - [M] Lifecycle verified: background/resume, rotation if allowed, process death for critical flows.
 - [M] Format, analyze, tests green; no new dependency without ADR.
 
+### Existing Project Gate
+
+Apply this gate when modifying an established app; mark it N/A for a genuinely new project.
+
+- [M] Current SDK/toolchain, architecture, state management, routing, backend, code generation, dependencies, tests, CI, and release setup have been inspected and classified as healthy, debt, unsupported, or blocking.
+- [M] Healthy existing conventions are preserved; no parallel router, state manager, backend client, or architecture has been introduced without an approved migration reason.
+- [M] Every proposed migration cites a concrete requirement, security/support issue, or measurable maintenance benefit; conformity with the greenfield baseline alone is not sufficient.
+- [M] Material migrations have an ADR covering alternatives, scope, user impact, compatibility, staged rollout, rollback/forward-fix, verification, and measurable acceptance.
+- [M] Existing behavior and critical journeys have baseline tests/evidence before structural changes; regression verification is completed after each migration stage.
+- [M] Existing dependencies and generated-code workflows are not removed solely to match greenfield defaults; new or changed dependencies pass the dependency admission review.
+
 ### Architecture Gate
 
 - [M] Import-boundary test passes; one owner per state; no parallel implementations.
