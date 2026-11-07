@@ -5,6 +5,13 @@ description: Integrates Flutter apps with native iOS and Android capabilities us
 
 # Native Platform Integration
 
+## Shared standards
+
+Use these central references as the source of truth:
+- [Architecture](../../references/architecture.md)
+- [Quality and platform verification](../../references/quality.md)
+- [Design system and platform behavior](../../references/design-system.md)
+
 ## Mission
 
 Bridge Flutter/Dart to required iOS and Android capabilities safely, with minimal native code and a stable Dart-facing contract. Native code is a deliberate boundary, not a second application architecture.
