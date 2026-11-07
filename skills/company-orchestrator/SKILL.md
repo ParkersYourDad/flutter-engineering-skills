@@ -30,6 +30,7 @@ Turn a product goal into coordinated, evidence-backed work across specialist rol
 | Need | Specialist |
 |---|---|
 | Validate idea, users, market problem, requirements, scope, acceptance | skills/product-discovery/SKILL.md |
+| Reference research, category patterns, screen and flow benchmarking | skills/mobile-design-research/SKILL.md (when useful) |
 | Visual direction, UX flows, Apple-inspired polish, interactions, design system | skills/apple-product-craft/SKILL.md |
 | System boundaries, architecture, API contracts, technical decisions | skills/flutter-architecture/SKILL.md |
 | Flutter/Dart implementation | Root SKILL.md |
