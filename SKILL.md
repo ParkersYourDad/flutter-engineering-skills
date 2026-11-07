@@ -51,6 +51,7 @@ For cross-functional or end-to-end product work, first read skills/company-orche
 | Responsibility | Skill |
 |---|---|
 | Product discovery and requirements | skills/product-discovery/SKILL.md |
+| Mobile design research and Appllama references | skills/mobile-design-research/SKILL.md (when research is valuable; MCP optional) |
 | Apple-HIG-informed UI/UX and design craft | skills/apple-product-craft/SKILL.md |
 | Flutter system architecture | skills/flutter-architecture/SKILL.md |
 | Native iOS/Android APIs and platform channels | skills/native-platform-integration/SKILL.md (only when needed) |
