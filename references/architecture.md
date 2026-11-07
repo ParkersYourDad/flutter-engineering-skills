@@ -20,31 +20,39 @@
 lib/
   main.dart            # bootstrap only: init, ProviderScope, runApp
   app/                 # App widget, router, root providers, composition
-  core/                # app-agnostic infra: network, storage, errors, logging, config
+  app_contract/        # stable app-facing contracts shared by app and features (route IDs/paths)
+  core/                # app-agnostic technical infrastructure: errors, logging, lifecycle, config
+  domain/              # optional shared business capabilities; no infrastructure
   design_system/       # tokens, theme, motion, components (Flutter SDK only)
   l10n/                # ARB files (+ generated output)
   features/<feature>/
-    data/              # repositories, data sources, DTOs
-    domain/            # only if real business rules exist
+    models/            # feature-owned app models shared by data and presentation
+    data/              # repositories, data sources, DTOs, mapping
+    domain/            # optional non-trivial feature business rules/entities
     presentation/      # screens, widgets, notifiers
+  supabase/            # Supabase config, migrations, seed and Edge Functions (backend source)
 test/                  # mirrors lib/
 ```
 
 Dependency direction (enforce with a test that scans `lib/` imports; no extra package needed):
 
 - `design_system` imports only Flutter/Dart SDK.
-- `core` never imports `features`, `app`, or `design_system`.
-- `features/x` imports `core`, `design_system`, and `l10n`; never another feature's internals. Cross-feature needs go through routes (IDs in paths) or shared providers promoted to `core`.
-- `app` composes everything. Nothing imports `app`.
+- `core` never imports `features`, `app`, `app_contract`, or `design_system`.
+- `app_contract` contains only stable app-facing contracts (route names/paths and typed path builders); it imports no feature or app implementation and contains no GoRouter dependency.
+- `features/x` imports its own `models`, `core`, `app_contract`, `design_system`, `l10n`, and explicitly shared domain modules; it never imports `app` or another feature's internals.
+- `app` composes everything: it imports feature route declarations and maps `app_contract` route contracts to GoRouter. Nothing imports `app`.
+- Cross-feature navigation uses `app_contract` constants/builders, never literal route strings or imports from another feature. Cross-feature business capabilities belong to a dedicated domain module, not `core`.
 
 Starter-kit rule: `core`, `design_system`, and `l10n` contain nothing specific to one product. Product-specific values (brand, API base URL, feature list) enter only through `app/` and configuration.
 
 ## Layers
 
-- **Presentation:** widgets and Notifiers (UI state). Never call Dio or storage directly.
-- **Data:** repositories own fetching, caching, and DTO-to-model mapping. DTOs use hand-written `fromJson`/`toJson` with explicit type checks; decide deliberately which fields are optional.
-- **Domain:** add only when logic is shared across features or non-trivial (pricing rules, validation policies). Do not create use-case classes that wrap one repository call.
+- **Presentation:** widgets and Notifiers (UI state). Never call Dio, Supabase clients, or storage directly.
+- **Models:** feature-owned immutable app models live in `features/<feature>/models/`; they are the stable contract consumed by presentation. They are not transport DTOs and do not import Flutter, Supabase, or Dio.
+- **Data:** repositories own remote/local fetching, caching, and DTO-to-model mapping. Supabase row maps/SDK response types and API DTOs stay in `data`; map them explicitly to feature models. Do not let widgets or Notifiers consume raw DTOs or Supabase response maps. Use hand-written parsing with explicit type checks and deliberate nullability.
+- **Domain:** optional for non-trivial business rules/entities or a genuinely shared business capability. A model-only feature does not need use-case classes. Shared business logic belongs in a dedicated `lib/domain/<capability>/` module or its owning feature's public contract—not `core`. Shared domain modules must not depend on Flutter, Supabase, Dio, app composition, or feature presentation. Do not create use-case classes that merely wrap one repository call.
 - **No abstract repository interfaces by default.** Dart classes are implicit interfaces; tests can `implements` the concrete class. Add an abstraction only for a real second implementation.
+- **Routing contract:** GoRouter configuration and route registration live in `app/`; route names and path builders consumed by features live in `app_contract/`. Features never import `app/routes.dart`, GoRouter setup, or another feature.
 - **Models:** immutable (`final` fields); hand-write `==`/`hashCode`/`copyWith` only where equality or copying is used. Use Dart 3 sealed classes and pattern matching for variants and results.
 
 ## Where code goes
@@ -63,6 +71,15 @@ Starter-kit rule: `core`, `design_system`, and `l10n` contain nothing specific t
 - Three flavors: `dev`, `staging`, `prod`. Android `productFlavors`; iOS schemes + xcconfig. Distinct application IDs/bundle IDs and display names so builds coexist.
 - Non-secret config (base URL, flags) via `--dart-define-from-file`, read once in `core/config`. Verify the flag against current Flutter docs.
 - Nothing in the app binary is secret. Client-shipped API keys are extractable; secrets must remain on a backend. CI secrets belong in CI secret storage only.
+
+## Backend ownership
+
+Supabase is the default backend platform. Flutter talks to Supabase through `supabase_flutter` for Auth, Postgres Data API, Storage, Realtime, and Edge Function invocation. Use each service only when the feature requires it; do not add Realtime, Storage buckets, or backend tables speculatively. Detailed security and operating rules are in `backend-supabase.md`.
+
+- Initialize one Supabase client during bootstrap and expose it through a Riverpod provider; repositories receive it through providers/constructors, never from widgets or global service locators.
+- Supabase SDK owns Supabase HTTP/WebSocket traffic. Use Dio for non-Supabase third-party REST APIs or a documented integration that genuinely needs it; do not duplicate Supabase calls through Dio.
+- Keep Supabase URL and publishable key as client configuration, not secrets. Never ship secret/service-role keys or Gemini API keys.
+- Supabase exceptions are mapped at the repository boundary into the app's `AppFailure`; do not leak raw backend/provider messages to users.
 
 ## State (Riverpod 3)
 
@@ -97,7 +114,7 @@ Verify the pinned `go_router` version/API on pub.dev.
 
 ## Networking (Dio)
 
-- One configured `Dio` in `core/network`: base URL from config, explicit connect/send/receive timeouts, JSON headers, locale header (`Accept-Language`) from active locale.
+- One configured `Dio` in `core/network` only for non-Supabase HTTP integrations: base URL from config, explicit connect/send/receive timeouts, JSON headers, locale header (`Accept-Language`) from active locale. Supabase requests use `supabase_flutter`.
 - Interceptors: auth (attach token; on 401 refresh once using single-flight coordination, then retry, else sign out) → retry (idempotent methods only, bounded backoff and jitter) → logging (debug only, redact authorization, cookies, tokens, PII) → error mapping to `AppFailure`. Ensure ordering and retry behavior are tested.
 - Cancel in-flight requests with `CancelToken` tied to provider disposal for screen-scoped work.
 - Parse large payloads off the UI thread (`Isolate.run`/`compute`) only when profiling shows the work is slow.
@@ -131,13 +148,15 @@ Enforce with tooling, not review: `flutter_lints` as a base plus strict analyzer
 
 - [M] `flutter create --platforms=android,ios`; confirm no web/desktop platform directories.
 - [M] SDK and Flutter constraints pinned in `pubspec.yaml`; versions verified on official sources and recorded in `docs/PROJECT.md`.
-- [M] Dependencies limited to the approved baseline: `flutter_localizations` (SDK), `intl`, `go_router`, `flutter_riverpod`, `dio`, `shared_preferences`; `flutter_secure_storage` only when sensitive data exists. Verify each package's current version, SDK constraint, maintenance, and license. Anything else needs a `DECISIONS.md` entry.
+- [M] Dependencies limited to the approved baseline: `flutter_localizations` (SDK), `intl`, `go_router`, `flutter_riverpod`, `supabase_flutter`, `dio` (for non-Supabase HTTP only), `shared_preferences`; `flutter_secure_storage` only for app-owned secrets that genuinely need device storage. Verify each package's current stable version, SDK constraint, maintenance, license, and breaking changes. Anything else needs a `DECISIONS.md` entry.
 - [M] `analysis_options.yaml` strict; format, analyze, and tests clean at first commit.
-- [M] Folder structure and architecture-boundary test.
+- [M] Folder structure and architecture-boundary test, including the allowed `app_contract` dependency and prohibition on feature-to-app/feature-to-feature imports.
 - [M] `l10n.yaml` + `app_en.arb` + `app_ar.arb`; locale resolution and persistence (see `localization-accessibility.md`).
 - [M] Design-system skeleton: tokens, light/dark theme, motion tokens, one or two real components; app shell on `WidgetsApp.router` (see `design-system.md`).
 - [M] Flavors and `--dart-define-from-file` config; distinct app IDs.
 - [M] Error model, redacting logging, global error handlers.
+- [M] Supabase project config, versioned SQL migrations, RLS on every exposed table, least-privilege grants, and backend security tests (see `backend-supabase.md`).
+- [C] Auth providers, Storage buckets, Realtime channels, and Edge Functions are configured only when required; Gemini calls use an authenticated Edge Function and a server-side secret.
 - [M] `.gitignore` covers keystores, `key.properties`, service config secrets, env files; no secret committed.
 - [M] Settings screen with theme and language (real consumers of persisted preferences; reference feature, not placeholder).
 - [M] CI runs format, analyze, and tests (see `quality.md`).
@@ -148,7 +167,7 @@ Enforce with tooling, not review: `flutter_lints` as a base plus strict analyzer
 
 - [M] Import-boundary test passes. Verify by running the test.
 - [M] Every state value has one owner. Verify by searching for duplicated providers/fields representing the same data.
-- [M] No widget calls Dio/storage directly. Verify by searching presentation code for Dio/SharedPreferences access.
-- [M] No hardcoded route strings, design values, or user-facing strings in features. Verify with grep plus analyzer/test.
+- [M] No widget/Notifier calls Dio, Supabase, or storage directly. Verify by searching presentation code for SDK/client imports and direct data access.
+- [M] No hardcoded route strings, design values, or user-facing strings in features. Verify route usage against `app_contract`, then grep plus analyzer/test.
 - [M] No dependency outside approved list without ADR. Compare `pubspec.yaml` with `DECISIONS.md`.
 - [R] Review largest widgets/Notifiers for mixed responsibilities.
