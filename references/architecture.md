@@ -81,7 +81,7 @@ Starter-kit rule: `core`, `design_system`, and `l10n` contain nothing specific t
 
 ## Config and environments
 
-- **FVM is mandatory:** pin one exact Flutter stable release in `.fvmrc`; CI and local commands use that same SDK via `fvm flutter` / `fvm dart`. Do not use beta/dev/master. Dart follows the selected Flutter SDK; `environment.sdk` must be compatible, not used to silently select a different toolchain. If FVM is unavailable, stop and report the toolchain mismatch rather than guessing which Flutter binary ran.
+- **Greenfield default:** pin one exact Flutter stable release with FVM in `.fvmrc`; CI and local commands use that same SDK via `fvm flutter` / `fvm dart`. For existing projects, preserve the established reproducible toolchain manager and exact SDK pin; migrate to FVM only for a documented benefit or support requirement. Do not use beta/dev/master. Dart follows the selected Flutter SDK; `environment.sdk` must be compatible, not used to silently select a different toolchain. If the selected pinned SDK is unavailable, stop and report the toolchain mismatch rather than guessing which Flutter binary ran.
 - Three flavors: `dev`, `staging`, `prod`. Android `productFlavors`; iOS schemes + xcconfig. Distinct application IDs/bundle IDs and display names so builds coexist.
 - Non-secret config (base URL, flags) via `--dart-define-from-file`, read once in `core/config`. Verify the flag against current Flutter docs.
 - Nothing in the app binary is secret. Client-shipped API keys are extractable; secrets must remain on a backend. CI secrets belong in CI secret storage only.
@@ -90,7 +90,7 @@ Starter-kit rule: `core`, `design_system`, and `l10n` contain nothing specific t
 
 For greenfield products that need a backend, Supabase is the preferred default platform. Existing apps should retain their current backend (for example Firebase or a custom API) when it is supported and meets product/security needs; do not migrate backend providers merely to match this baseline. Flutter talks to Supabase through `supabase_flutter` only when Supabase is selected. Use each service only when the feature requires it; do not add Realtime, Storage buckets, or backend tables speculatively. Detailed Supabase security and operating rules are in `backend-supabase.md`.
 
-- Initialize one Supabase client during bootstrap and expose it through a Riverpod provider; repositories receive it through providers/constructors, never from widgets or global service locators.
+- When Supabase is selected, initialize one client during bootstrap and expose it through the project's existing dependency-injection/state-management approach (a Riverpod provider when Riverpod is used); repositories receive it through constructors/providers, never from widgets or an untracked global service locator.
 - Supabase SDK owns Supabase HTTP/WebSocket traffic. Use Dio for non-Supabase third-party REST APIs or a documented integration that genuinely needs it; do not duplicate Supabase calls through Dio.
 - Keep Supabase URL and publishable key as client configuration, not secrets. Never ship secret/service-role keys or Gemini API keys.
 - Supabase exceptions are mapped at the repository boundary into the app's `AppFailure`; do not leak raw backend/provider messages to users.
@@ -211,5 +211,5 @@ Enforce with tooling, not review: `flutter_lints` as a base plus strict analyzer
 - [M] Every state value has one owner. Verify by searching for duplicated providers/fields representing the same data.
 - [M] No widget/Notifier calls Dio, Supabase, or storage directly. Verify by searching presentation code for SDK/client imports and direct data access.
 - [M] No hardcoded route strings, design values, or user-facing strings in features. Verify route usage against `app_contract`, then grep plus analyzer/test.
-- [M] No dependency outside approved list without ADR. Compare `pubspec.yaml` with `DECISIONS.md`.
+- [M] Every new or changed dependency has a justified decision record and passes dependency admission. Review existing dependencies for maintenance, security, licensing, and compatibility; do not migrate healthy dependencies solely to match the greenfield baseline.
 - [R] Review largest widgets/Notifiers for mixed responsibilities.
