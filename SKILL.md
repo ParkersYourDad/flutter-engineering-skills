@@ -53,6 +53,8 @@ For cross-functional or end-to-end product work, first read skills/company-orche
 | Product discovery and requirements | skills/product-discovery/SKILL.md |
 | Apple-HIG-informed UI/UX and design craft | skills/apple-product-craft/SKILL.md |
 | Flutter system architecture | skills/flutter-architecture/SKILL.md |
+| Native iOS/Android APIs and platform channels | skills/native-platform-integration/SKILL.md (only when needed) |
+| AI model, RAG, prompts, evaluations, and tool safety | skills/ai-product-engineering/SKILL.md (only for AI features) |
 | Supabase backend and Gemini integration | skills/supabase-backend-engineering/SKILL.md |
 | Accessibility, localization, Arabic/RTL | skills/accessibility-localization/SKILL.md |
 | Independent QA and product verification | skills/mobile-qa-engineering/SKILL.md |
