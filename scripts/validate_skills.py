@@ -3,9 +3,11 @@
 
 from __future__ import annotations
 
+import argparse
 import re
-from typing import Dict, List, Optional, Tuple
+import tempfile
 from pathlib import Path
+from typing import Dict, List, Optional, Tuple
 from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -69,19 +71,68 @@ def check_local_links(path: Path) -> List[str]:
         try:
             resolved.relative_to(ROOT.resolve())
         except ValueError:
-            errors.append(
-                f"{path.relative_to(ROOT)}: link escapes repository: {raw_target}"
-            )
+            errors.append(f"{path.relative_to(ROOT)}: link escapes repository: {raw_target}")
             continue
 
         if not resolved.exists():
-            errors.append(
-                f"{path.relative_to(ROOT)}: broken local link: {raw_target}"
-            )
+            errors.append(f"{path.relative_to(ROOT)}: broken local link: {raw_target}")
     return errors
 
 
+def self_test() -> int:
+    global ROOT
+    previous_root = ROOT
+    try:
+        with tempfile.TemporaryDirectory() as directory:
+            ROOT = Path(directory).resolve()
+            (ROOT / "skills" / "demo-skill").mkdir(parents=True)
+            (ROOT / "references").mkdir()
+            skill = ROOT / "skills" / "demo-skill" / "SKILL.md"
+            skill.write_text(
+                "---\nname: demo-skill\ndescription: A valid test skill.\n---\n",
+                encoding="utf-8",
+            )
+            (ROOT / "references" / "guide.md").write_text("# Guide\n", encoding="utf-8")
+            readme = ROOT / "README.md"
+            readme.write_text(
+                "[valid](references/guide.md)\n"
+                "[external](https://example.com)\n"
+                "[broken](references/missing.md)\n"
+                "[escape](../outside.md)\n",
+                encoding="utf-8",
+            )
+
+            name, description, errors = read_frontmatter(skill)
+            if name != "demo-skill" or not description or errors:
+                print("Skill validator self-test FAILED: valid frontmatter was rejected.")
+                return 1
+
+            link_errors = check_local_links(readme)
+            if len(link_errors) != 2 or not any("broken local link" in e for e in link_errors) or not any("escapes repository" in e for e in link_errors):
+                print("Skill validator self-test FAILED: expected broken-link and path-escape findings.")
+                for error in link_errors:
+                    print("- " + error)
+                return 1
+
+            skill.write_text("---\nname: Invalid_Name\n---\n", encoding="utf-8")
+            name, _description, errors = read_frontmatter(skill)
+            if name != "Invalid_Name" or len(errors) != 2:
+                print("Skill validator self-test FAILED: invalid name/description was not rejected.")
+                return 1
+    finally:
+        ROOT = previous_root
+
+    print("Skill validator self-test PASSED (valid/invalid metadata, valid/external links, broken links, and repository path escape).")
+    return 0
+
+
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--self-test", action="store_true", help="run built-in validator tests without scanning the repository")
+    args = parser.parse_args()
+    if args.self_test:
+        return self_test()
+
     errors: list[str] = []
     skill_files = [ROOT / "SKILL.md"]
     skill_files.extend(sorted((ROOT / "skills").glob("*/SKILL.md")))
@@ -108,9 +159,8 @@ def main() -> int:
 
     markdown_files = sorted(ROOT.rglob("*.md"))
     for path in markdown_files:
-        if ".git" in path.parts:
-            continue
-        errors.extend(check_local_links(path))
+        if ".git" not in path.parts:
+            errors.extend(check_local_links(path))
 
     if errors:
         print("Skill validation FAILED:")
@@ -119,7 +169,7 @@ def main() -> int:
         print(f"{len(errors)} issue(s) found.")
         return 1
 
-    print(f"Skill validation PASSED.")
+    print("Skill validation PASSED.")
     print(f"- {len(skill_files)} skill entrypoints validated.")
     print(f"- {len(markdown_files)} Markdown files checked for broken local links.")
     print("- Frontmatter names/descriptions are valid and skill names are unique.")
