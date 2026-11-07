@@ -42,6 +42,8 @@ Rewriting requirements silently, approving security without Security, making unm
 - Loading, empty, error, offline, permission, unauthorized, and recovery states.
 - Android/iOS navigation, back behavior, safe areas, keyboard, lifecycle, and deep links.
 - Arabic/English, RTL/LTR, system text size, dark/light, and screen reader behavior.
+- Arabic-specific cases where applicable: mixed Arabic/Latin strings, punctuation and bidi ordering, URLs/emails/phone numbers/identifiers, caret and keyboard behavior, long translations, ICU plural/select forms, and locale-specific number/date/currency formatting.
+- Shared component and critical-screen matrix: English LTR, Arabic RTL, mixed-direction content, long localized copy, text scale 1.0/2.0 and the largest practical OS setting. Do not infer RTL correctness from changing the locale alone.
 - Accessibility guideline and manual VoiceOver/TalkBack passes.
 - Backend ownership, API contracts, retries, idempotency, and data correctness.
 - Install, upgrade, migration compatibility, release configuration, and smoke tests.
