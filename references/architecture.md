@@ -63,7 +63,7 @@ Starter-kit rule: `core`, `design_system`, and `l10n` contain nothing specific t
 | Needed by a second feature | Duplicate once if tiny; promote on the third real use (UI: second use if it is a visual primitive) |
 | Visual primitive/pattern | `design_system/components` |
 | Infrastructure with no UI (HTTP, storage, logging) | `core` |
-| Business rule shared across features | Domain in a shared module under `core` or a dedicated feature; record in `DECISIONS.md` |
+| Business rule shared across features | Dedicated `lib/domain/<capability>/` module with no infrastructure dependencies; record in `DECISIONS.md` |
 | Do not introduce | Service locators alongside Riverpod, screen base classes, global singletons, utils dumping grounds, mappers/factories without a second consumer |
 
 ## Config and environments
@@ -99,7 +99,7 @@ Verify the current `flutter_riverpod` version and migration notes on pub.dev/riv
 
 Verify the pinned `go_router` version/API on pub.dev.
 
-- Build `GoRouter` once inside a provider, never in build. Route paths/names are constants in `app/routes.dart`; no route string literals at call sites. Do not use generated route code. Validate and parse params manually; malformed input leads to not-found/error UI.
+- Build `GoRouter` once inside a provider, never in build. Route names and path builders are defined in `app_contract/`; GoRouter route registration and page construction live in `app/`. No route string literals at feature call sites and no generated route code. Validate and parse params at the routing boundary; malformed input leads to not-found/error UI.
 - Tabs: `StatefulShellRoute.indexedStack` preserves per-tab stacks. Use `go` to switch locations and `push` for stack-based detail/modal flows.
 - Auth: one pure, loop-free `redirect` function driven by auth state via an appropriate refresh mechanism. Every redirect target must itself resolve without another redirect loop; handle loading/unknown auth state explicitly. Verify current GoRouter refresh APIs.
 - Deep links: Android App Links (`assetlinks.json`) and iOS Universal Links (`apple-app-site-association` + Associated Domains) require server-side files and a verified domain. Test with `adb shell am start -a android.intent.action.VIEW -d <url>` and `xcrun simctl openurl booted <url>`.
@@ -125,12 +125,12 @@ Verify the pinned `go_router` version/API on pub.dev.
 
 | Data | Where |
 |---|---|
-| Tokens, credentials, keys | `flutter_secure_storage` (Keychain / Android Keystore-backed) |
+| App-owned credentials/secrets (only when genuinely needed) | `flutter_secure_storage` (Keychain / Android Keystore-backed); Supabase session tokens remain managed by the Supabase SDK |
 | Theme, locale, flags, small preferences | `shared_preferences` |
 | Small cached API data | JSON in app cache directory or prefs, with timestamp + version |
 | Relational/queryable data | Decide with an ADR; codegen-based DBs are not part of the default stack |
 
-Verify current APIs of both packages (`shared_preferences` has newer async APIs). Handle read failures (corrupt data, undecryptable secure storage after restore/backup): clear and recover, do not crash. Keychain items can survive reinstall on iOS: use a first-run marker and clear stale secure data when it is absent. Version persisted schemas and migrate or safely reset. Never store sensitive data in prefs or logs.
+Verify current APIs of both packages (`shared_preferences` has newer async APIs). Do not manually duplicate Supabase session/token storage; use the SDK's supported persistence. Handle read failures (corrupt data, undecryptable secure storage after restore/backup): clear and recover, do not crash. Keychain items can survive reinstall on iOS: use a first-run marker and clear stale secure data when it is absent. Version persisted schemas and migrate or safely reset. Never store sensitive data in prefs or logs.
 
 ## Code standards
 
