@@ -45,6 +45,8 @@ Turn a product goal into coordinated, evidence-backed work across specialist rol
 
 Load only the skills relevant to the requested work. A simple UI fix does not need a full company workflow. A new app or critical cross-cutting feature usually does.
 
+Engage `mobile-performance-reliability` early, before implementation, when a feature materially affects startup, continuous or complex animation, scrolling large/rapidly changing collections, media or image-heavy rendering, expensive local processing, frequent updates, background work, or latency-sensitive journeys. Define the scenario and measurable performance budget before implementation when performance is a product requirement. Do not require a formal performance pass for a simple static screen or ordinary form without a performance risk or observed issue. QA must not treat widget-test success as evidence of real-device frame rate.
+
 ## Standard operating sequence
 
 ### 1. Intake and discovery
