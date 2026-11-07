@@ -8,6 +8,8 @@ description: Designs polished, original Flutter mobile experiences using Apple H
 ## Shared standards
 
 Use these repository-level documents as the single source of truth. Do not copy their checklists into this skill or create conflicting local variants:
+- [Mobile Design Research](../../skills/mobile-design-research/SKILL.md)
+- [Flutter UI Translation](../../references/flutter-ui-translation.md)
 - [design-system.md](../../references/design-system.md)
 - [localization-accessibility.md](../../references/localization-accessibility.md)
 - [quality.md](../../references/quality.md)
@@ -37,7 +39,8 @@ Do not own business requirements, database/API authorization, Flutter architectu
 ## Required workflow
 
 1. Read the product brief and acceptance criteria. Identify the user's primary task and screen context.
-2. Inspect existing design tokens, components, typography, navigation, and screen patterns. Reuse before inventing.
+2. When category conventions or visual decisions are uncertain, request a focused study from Mobile Design Research. Do not force research for trivial changes or user-approved designs.
+3. Inspect existing design tokens, components, typography, navigation, and screen patterns. Reuse before inventing.
 3. Review the current Apple HIG sections relevant to the work: design principles, layout, typography, color, materials, motion, feedback, inputs, components, and accessibility. Check current Flutter platform-adaptation guidance. Do not rely on screenshots or outdated trend summaries as the only specification.
 4. Define information hierarchy and flow before surface styling. Specify loading, empty, error, permission, offline, success, disabled, and destructive states where applicable.
 5. Produce a compact screen spec: structure, content priority, layout behavior, component selection, token use, gestures, focus/semantics, motion, and failure states.
