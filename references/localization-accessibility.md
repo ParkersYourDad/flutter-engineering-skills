@@ -28,7 +28,8 @@ Use `intl` with active locale for dates, times, numbers, percentages, currency, 
 - Mirror navigation affordances (back, chevrons, progress direction), swipe-action sides, slider direction, list leading/trailing, and drawer side. Do not mirror media controls, clocks, logos, numerals, or charts' time axis unless locale convention says so.
 - Text fields: caret, hint alignment, and mixed Arabic/Latin input behave correctly; keyboard type fits content.
 - Test every screen and component under `Directionality(rtl)` with Arabic strings longer than English.
-- Fonts: verify Arabic glyph coverage and diacritics rendering; test line-height clipping.
+- Fonts: verify Arabic glyph coverage and diacritics rendering; test line-height clipping. Tune Arabic line-height and font metrics from rendered-script inspection rather than copying Latin values: check ascenders/descenders, tashkeel, baseline alignment, clipping, mixed Arabic/Latin fallback, and multi-line wrapping across actual target fonts and OS versions. Avoid letter-spacing on connected Arabic text unless the chosen typeface and visual review explicitly justify it; do not globally inflate line-height without checking density and alignment.
+- Mirror only icons whose meaning is directional in the current context (back/forward, previous/next, logical progression). Do not mirror universal symbols, media timelines, charts, clocks, physical gestures, or icons whose meaning is not direction-dependent. Verify each icon in both locales; `matchTextDirection` is a behavior choice, not a blanket RTL switch.
 
 ## Accessibility rules
 
