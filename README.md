@@ -15,6 +15,8 @@ A coordinated skill set for building high-quality Flutter/Dart Android and iOS p
 | [Apple Product Craft](skills/apple-product-craft/SKILL.md) | UX/UI, Apple HIG-informed design, visual hierarchy, motion, and native-feeling interaction |
 | [Flutter Architecture](skills/flutter-architecture/SKILL.md) | Architecture, state ownership, boundaries, contracts, and ADRs |
 | [Supabase Backend Engineering](skills/supabase-backend-engineering/SKILL.md) | PostgreSQL, RLS, Auth, Storage, Realtime, Edge Functions, and Gemini |
+| [Native Platform Integration](skills/native-platform-integration/SKILL.md) | Swift/Kotlin host APIs, plugins, platform channels, permissions, and lifecycle (conditional) |
+| [AI Product Engineering](skills/ai-product-engineering/SKILL.md) | Model evaluation, RAG, prompts, structured output, tool safety, and cost (conditional) |
 | [Accessibility & Localization](skills/accessibility-localization/SKILL.md) | Screen readers, text scaling, contrast, Arabic/English, and RTL |
 | [Mobile QA Engineering](skills/mobile-qa-engineering/SKILL.md) | Independent testing, regression, device coverage, and acceptance |
 | [Mobile Security Engineering](skills/mobile-security-engineering/SKILL.md) | Threat modeling, client/API/backend security, and independent review |
