@@ -115,7 +115,7 @@ Verify the pinned `go_router` version/API on pub.dev.
 ## Networking (Dio)
 
 - One configured `Dio` in `core/network` only for non-Supabase HTTP integrations: base URL from config, explicit connect/send/receive timeouts, JSON headers, locale header (`Accept-Language`) from active locale. Supabase requests use `supabase_flutter`.
-- Interceptors: auth (attach token; on 401 refresh once using single-flight coordination, then retry, else sign out) → retry (idempotent methods only, bounded backoff and jitter) → logging (debug only, redact authorization, cookies, tokens, PII) → error mapping to `AppFailure`. Ensure ordering and retry behavior are tested.
+- Interceptors: add service-specific authentication only when the external API requires it; never forward a Supabase session token to an unrelated host. Handle that service's 401 according to its own contract—do not sign the user out of Supabase merely because a third-party API returned 401. Retry only idempotent operations with bounded backoff/jitter; logging is debug-only and redacts authorization, cookies, tokens, and PII; map errors to `AppFailure`. Test interceptor ordering and retry behavior.
 - Cancel in-flight requests with `CancelToken` tied to provider disposal for screen-scoped work.
 - Parse large payloads off the UI thread (`Isolate.run`/`compute`) only when profiling shows the work is slow.
 - No certificate pinning unless required; it adds operational risk. If required, record an ADR including rotation plan.
