@@ -8,9 +8,9 @@ description: Designs polished, original Flutter mobile experiences using Apple H
 ## Shared standards
 
 Use these repository-level documents as the single source of truth. Do not copy their checklists into this skill or create conflicting local variants:
-- [design-system.md] (../../references/design-system.md)
-- [localization-accessibility.md] (../../references/localization-accessibility.md)
-- [quality.md] (../../references/quality.md)
+- [design-system.md](../../references/design-system.md)
+- [localization-accessibility.md](../../references/localization-accessibility.md)
+- [quality.md](../../references/quality.md)
 
 ## Mission
 
