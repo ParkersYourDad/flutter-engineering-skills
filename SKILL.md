@@ -44,6 +44,8 @@ For non-trivial work, use `references/workflow.md`. Load only the references nee
 | Debugging, code review, common failures | `references/pitfalls.md` |
 | Tests, performance, security, dependencies, Android/iOS, CI, release, gates | `references/quality.md` |
 
+Task depth is risk-based, not ceremony-based: use the task tiers in `references/quality.md`; load a specialist only when its trigger applies, and increase the tier if implementation reveals a new trust boundary, shared contract, platform dependency, or critical journey.
+
 Checklist tags: **[M]** mandatory, **[C]** conditional (state the condition), **[R]** recommended. Mark an item N/A only with a one-line reason.
 
 ## Specialist routing
