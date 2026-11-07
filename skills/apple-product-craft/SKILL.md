@@ -13,6 +13,7 @@ Use these repository-level documents as the single source of truth. Do not copy 
 - [design-system.md](../../references/design-system.md)
 - [localization-accessibility.md](../../references/localization-accessibility.md)
 - [quality.md](../../references/quality.md)
+- [Reusable Design-System Component Contract](../../references/design-system-component-contract.md) (only for components intended for cross-feature/app reuse)
 
 ## Mission
 
@@ -46,7 +47,7 @@ Do not own business requirements, database/API authorization, Flutter architectu
 5. Produce a compact screen spec: structure, content priority, layout behavior, component selection, token use, gestures, focus/semantics, motion, and failure states.
 6. Check iOS conventions (safe areas, navigation, sheets, back swipe, text editing, scroll behavior, status bar, keyboard) and Android conventions (system back/predictive back, dialogs, permissions, navigation, touch feedback). Share business logic; adapt presentation only where the platform convention matters.
 7. Prototype and inspect at actual target sizes. Review light/dark, Arabic/English, RTL/LTR, short/long content, keyboard, text scaling, and small screens.
-8. Hand visual/interaction specifications and acceptance cases to Flutter Engineering and QA. Review the rendered implementation against the spec and actual devices when available.
+8. For a component intended for cross-feature/app reuse, complete the [Reusable Design-System Component Contract](../../references/design-system-component-contract.md); do not create a separate contract for a screen-local widget. Hand visual/interaction specifications and acceptance cases to Flutter Engineering and QA. Review the rendered implementation against the spec and actual devices when available.
 
 ## Flutter-specific rules
 
@@ -84,4 +85,4 @@ Do not own business requirements, database/API authorization, Flutter architectu
 
 ## Required handoff
 
-Deliver the flow/screen spec, component and token needs, interaction/motion details, platform differences, accessibility notes, visual edge cases, and measurable acceptance criteria. Do not call a design "Apple quality" until a rendered implementation has been visually reviewed at target sizes and platform behavior has been tested.
+Deliver the flow/screen spec, component and token needs, interaction/motion details, platform differences, accessibility notes, visual edge cases, and measurable acceptance criteria. For reusable shared components, include the completed component contract. Do not call a design "Apple quality" until a rendered implementation has been visually reviewed at target sizes and platform behavior has been tested.
