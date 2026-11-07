@@ -13,7 +13,7 @@
 
 Match ceremony to risk. A one-line fix needs only the relevant inspect/implement/verify/report steps. A new feature or shared component needs the full workflow. A new project or shared foundation also needs an ADR first.
 
-Before any feature or shared code, answer in the plan (not in a new file): What exists already? What is intended behavior? Edge cases? Acceptance criteria? Platform differences? New dependencies (justify or drop)?
+Before any feature or shared code, answer in the plan (not in a new file): What exists already? What is intended behavior? Edge cases? Acceptance criteria? Platform differences? Backend data ownership and authorization? RLS impact? Migration/rollback? New dependencies (justify or drop)? For Gemini/AI features: data sent to the provider, user consent, quota/cost limits, abuse controls, and failure behavior?
 
 ## Requirements and traceability
 
@@ -26,14 +26,14 @@ Traceability lives in one table that doubles as acceptance checklist:
 
 Statuses: Not Started, In Progress, Passed, Failed, Blocked, Not Applicable (with justification). Never mark Passed because code exists; Passed means the acceptance condition was observed. Evidence is a command + result, test name, screenshot path, or measurement.
 
-Cross-cutting acceptance criteria every project inherits: gates in `quality.md`, state coverage in `design-system.md`, and checklists in `localization-accessibility.md`. Add IDs to the traceability table; do not copy all lists into it.
+Cross-cutting acceptance criteria every project inherits: gates in `quality.md`, state coverage in `design-system.md`, backend controls in `backend-supabase.md`, and checklists in `localization-accessibility.md`. Add IDs to the traceability table; do not copy all lists into it.
 
 ## Project docs (the only four)
 
 Create under `docs/` at project start; keep short; never duplicate content between them or into code comments.
 
 1. **`PROJECT.md`:** product summary, fixed constraints, supported OS versions, folder map, links to code-level conventions, current status. Starts from stack in `SKILL.md`; link to rules rather than restating them.
-2. **`REQUIREMENTS.md`:** scope, out-of-scope, and traceability/acceptance table.
+2. **`REQUIREMENTS.md`:** scope, out-of-scope, and traceability/acceptance table, including backend data access, RLS, retention, and AI usage requirements when applicable.
 3. **`DECISIONS.md`:** dated one-paragraph ADRs (context, decision, consequences) for long-term-cost choices: dependencies, storage, auth, architecture deviations. Includes an Assumptions section; remove assumptions as confirmed.
 4. **`ISSUES.md`:** known issues with ID, impact, workaround, status. Delete entries when fixed (regression test is permanent record).
 
@@ -41,8 +41,8 @@ README holds setup, run, and release commands only.
 
 ## Decision authority
 
-- **Decide yourself:** technical libraries within stack after verification, folder placement, naming, patterns, token values, default UX behavior, test strategy, bug fixes.
-- **Ask product owner:** features/scope, brand identity (name, accent, tone), monetization, personal data collected and why, legal/regulatory positions, store account details.
+- **Decide yourself:** technical libraries within stack after verification, folder placement, naming, patterns, token values, default UX behavior, test strategy, bug fixes, and routine Supabase implementation details within approved security rules.
+- **Ask product owner:** features/scope, brand identity (name, accent, tone), monetization, personal data collected and why, whether prompts/user content may be sent to Gemini and retained, legal/regulatory positions, store account details.
 - **Needs explicit authorization:** see `SKILL.md` operating rules.
 - **Cannot do here:** actions unavailable to tools (building iOS on Linux, physical-device testing, store consoles). Say so; never imply completed.
 
