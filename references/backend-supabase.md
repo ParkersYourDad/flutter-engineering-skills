@@ -181,3 +181,15 @@ Supabase changes frequently. Before adding/upgrading `supabase_flutter`, Supabas
 6. Record material version/architecture choices in `docs/DECISIONS.md`.
 
 As of 2026-11-07, Supabase has announced the v3 Flutter client as a breaking-change prerelease, with stable release planned for 2026-11-11. Do not adopt a v3 prerelease by default; re-check the current stable channel and migration guide when the skill is used.
+
+## Official references
+
+- Supabase Flutter client and setup: https://supabase.com/docs/reference/dart/installing
+- Supabase Flutter quickstart: https://supabase.com/docs/guides/getting-started/quickstarts/flutter
+- Supabase API security and RLS: https://supabase.com/docs/guides/api/securing-your-api
+- Supabase Edge Function secrets: https://supabase.com/docs/guides/functions/secrets
+- Supabase Edge Function authentication: https://supabase.com/docs/guides/functions/auth
+- Supabase Authorization headers: https://supabase.com/docs/guides/functions/auth-headers
+- Supabase breaking changes: https://supabase.com/changelog?types=breaking-change
+- Supabase Flutter package versions: https://pub.dev/packages/supabase_flutter
+- Google Gemini API key security: https://ai.google.dev/gemini-api/docs/api-key
