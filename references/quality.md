@@ -45,13 +45,36 @@ Test behavior and requirements by risk. Do not chase coverage percentages or tes
 
 ## Performance
 
-Measure, do not assume. Never say optimized without numbers.
+Measure before changing code. "Optimized", "smooth", and "fast" are claims that require repeatable evidence.
 
-- Measure in **profile mode on a real device** (`flutter run --profile`) using DevTools (Performance, CPU, Memory, Rebuild stats). Debug/emulator numbers are not valid evidence. Without a device, report not measured and apply only known-safe practices.
-- Targets (document in `REQUIREMENTS.md` as `PERF-*`): frames within budget at device refresh rate (no sustained jank), cold-start-to-first-interactive time on lowest supported device, memory stable across repeated navigation, no leaks after screens close.
-- Known-safe practices: const widgets, narrow `ref.watch(...select)`, `ListView.builder`/slivers with stable keys, `cacheWidth`/`cacheHeight` (or `ResizeImage`) for large images with a caching strategy, defer non-critical init until after first frame, avoid expensive opacity/clipping/saveLayer patterns in scrolling lists, move heavy parsing to isolate, cancel work on dispose.
-- Check release-only behavior (minification, `--obfuscate --split-debug-info`) with release build, not only debug.
-- Lifecycle: handle pause/resume (refresh stale data, pause streams/timers), low memory (drop caches), connectivity changes.
+### Measurement protocol
+
+- Profile on a physical device in **profile mode** for Flutter UI/raster diagnosis; use a release build for release-only behavior and final smoke checks. Debug/emulator timings are not performance evidence.
+- Test the lowest supported device first. Also test a representative higher-refresh device when the product targets devices with 90 Hz/120 Hz displays.
+- Record device model/chipset, OS version, refresh rate, Flutter version, build mode, app version, test data size, network condition, scenario, run count, and measurement tool. Compare like with like.
+- Repeat representative runs sufficiently to distinguish a real change from noise. Record sample count and report median (P50) and tail latency (P95; P99 only when sample size supports it). Keep a small baseline table in `REQUIREMENTS.md` or release evidence; do not create a separate performance document by default.
+- Use DevTools Performance/CPU/Memory and frame analysis. Inspect both UI-thread and raster-thread frame times; identify whether the bottleneck is build/layout, raster/GPU, platform/plugin work, I/O, or network before changing code.
+
+### Rendering and interaction
+
+- Define frame budget from the tested display refresh rate: `1000 / Hz` milliseconds (about 16.67 ms at 60 Hz, 11.11 ms at 90 Hz, and 8.33 ms at 120 Hz). Evaluate UI and raster frame timing against the actual display budget; do not use a universal 16 ms target on every device.
+- Track janky-frame percentage and P50/P95 UI and raster frame times during defined journeys (scrolling, navigation, opening sheets, typing, and representative animations). The project sets its own acceptable limits in `PERF-*`; do not invent a universal pass percentage.
+- Check first-use animations and shader-heavy screens, not only warmed-up repeats. Keep Flutter's supported renderer defaults unless device evidence and a documented decision justify a change; never force renderer flags as a generic optimization.
+- Prefer lazy lists/slivers for large collections, stable keys where state identity matters, bounded image decoding/cache, localized rebuilds, and cancellation of screen-scoped work. Paginate large data rather than loading it all.
+- Avoid expensive `saveLayer`, unnecessary opacity/clipping, intrinsic layout passes in large scrolling content, and layout-affecting animations when a transform/opacity animation is sufficient. Do not add `RepaintBoundary`, caching layers, isolates, or custom render objects without profiling evidence.
+- Do not perform network calls, expensive parsing, sorting, image work, or repeated allocations in `build()`. Move CPU-heavy work off the UI isolate only after profiling identifies it as a bottleneck.
+
+### Startup, memory, size, and energy
+
+- Measure **cold start and warm start separately**. Define "first interactive" as the point the user can complete the first meaningful action; first frame alone is not enough. Record P50/P95 and test on the lowest supported device.
+- Measure memory after warm-up and after repeated navigation through the same journeys. Look for retained screens/controllers/subscriptions, unbounded image/data caches, duplicate listeners, and growth that does not settle after normal garbage collection. High memory once is not itself proof of a leak.
+- Track release artifact size and its change from the previous release. Use Flutter's `--analyze-size` report to find the responsible Dart packages, native libraries, fonts, and assets before removing dependencies or compressing assets.
+- For products with background work, media, location, frequent sync, or realtime subscriptions, test idle/background behavior, request frequency, stream disposal, battery/thermal impact, and pause/resume recovery. Do not poll or keep animations/timers active when the feature is not visible or needed.
+- Define budgets per product in `REQUIREMENTS.md`: device class, mode, scenario, dataset, network condition, metric, percentile, threshold, and baseline. A change that regresses a critical journey beyond its approved budget must be fixed or explicitly accepted by the product owner with a recorded reason.
+
+Known-safe starting points (not substitutes for measurement): `const` widgets where applicable, `ref.watch(...select)` for narrow state, lazy lists, decode-size-aware images, bounded caches, deferring non-critical work without delaying first interaction, and disposing/cancelling work when no longer needed.
+
+Release optimization: verify obfuscation/minification and `--split-debug-info` behavior in release builds. Archive symbol files privately for crash diagnosis; do not publish them as public artifacts.
 
 ## Backend security (Supabase and Gemini)
 
@@ -68,22 +91,50 @@ Apply `backend-supabase.md` to every backend feature. The following are release-
 
 ## Security and privacy
 
-Baseline: OWASP MASVS (and MASTG for test technique). This is not legal/compliance certification; flag items for qualified legal/security review (privacy policy text, GDPR/CCPA/regional laws, children's data, payments, health).
+Baseline: use the current OWASP MASVS control groups and relevant MASTG testing guidance. Select a risk-appropriate verification profile for the app; this is an engineering baseline, not a claim of OWASP certification or legal compliance. Review privacy, payments, children’s data, health, and regulated-data requirements with qualified specialists where applicable.
 
-- [M] No secrets or signing material in source control; do not assume client binaries can protect secrets.
-- [M] Supabase publishable key may be embedded in a client only because it is designed to be public; it grants no data access without correct grants and RLS. Never embed secret/service-role keys.
-- [M] Gemini API key exists only in Supabase Edge Function secrets (e.g. `GEMINI_API_KEY`) and is read at runtime; never use `--dart-define`, `.env` bundled into Flutter, Remote Config, or obfuscation as a secret store.
-- [M] Supabase session tokens remain under the Supabase SDK's supported session persistence; do not copy them into app preferences or custom stores. App-owned credentials, if any, use secure storage. Clear user-scoped data on sign-out; no sensitive data in prefs, logs, crash reports, or task-switcher screenshots where relevant (consider `FLAG_SECURE`/blur on sensitive screens).
-- [M] HTTPS only; no cleartext (`usesCleartextTraffic` off outside dev; iOS ATS not weakened); no permissive `badCertificateCallback`.
-- [M] Validate/sanitize external input (forms, deep-link params, server data); treat deep links/intents as untrusted.
-- [M] Logs redact tokens/PII; verbose logs are debug-only.
-- [M] Collect minimum data; request permissions at moment of need with rationale; handle denial and settings redirect.
-- [M] Android: explicitly decide `allowBackup` (disable or define rules so secrets are not restored), minimize exported components, verify R8/minify with release run.
-- [M] iOS: Privacy Manifest and usage-description strings are accurate, including third-party SDKs; choose Keychain accessibility deliberately.
-- [C] Certificate pinning, biometric auth, root/jailbreak detection only when required (ADR).
-- [M] Dependency vulnerability check at each upgrade/release (pub.dev advisories, `flutter pub outdated`, GitHub Dependabot where available).
-- [M] Supabase SDK and CLI changelogs checked for breaking changes before upgrades; use stable SDK releases by default and explicitly reject prereleases unless justified in an ADR.
-- [C] Account creation requires in-app account deletion; third-party social login on iOS may require Sign in with Apple. Verify current App Store rules before release.
+### Threat model and data handling
+
+- [M] For every non-trivial feature, identify the data involved, where it travels, who can call it, which component is trusted, and what happens if the operation is abused. Explicitly consider account/tenant boundaries, object-level authorization (BOLA/IDOR), replay/duplicate requests, automation, quota/cost abuse, injection, and data leakage.
+- [M] Classify data before choosing storage or telemetry: public, internal, personal, sensitive, credentials. Collect only what the feature needs; document purpose, access, retention, deletion, and external processors in the project requirements.
+- [M] Treat the app, deep links, intents, clipboard, files, network responses, push payloads, and AI/model output as untrusted input. Validate type, size, range, format, ownership, and allowed state at the trust boundary. Client-side validation improves UX but never replaces server-side validation/authorization.
+- [M] Enforce object-level authorization on the server for every read/write/action. A hidden button, route guard, client-supplied owner ID, role, price, quota, or decoded-but-unverified JWT is not authorization.
+- [M] Use parameterized database operations. Never interpolate untrusted input into SQL, shell commands, file paths, or upstream URLs. For backend URL fetching, restrict destinations to an explicit host/protocol allowlist and defend against SSRF, redirects to private/internal addresses, and DNS rebinding.
+- [C] For file upload features, enforce byte-size limits and allowed formats server-side; inspect actual content rather than trusting extension or client MIME type. Define private/public access, ownership, retention, and deletion. Add malware scanning when the threat model and file types justify it.
+
+### Secrets, sessions, and local data
+
+- [M] No secrets, signing material, private keys, or service-role credentials in source control, Flutter assets, app binaries, build defines, Remote Config, analytics, crash reports, or logs. Client-embedded values are extractable; obfuscation is not secret storage.
+- [M] Supabase publishable keys are public identifiers, not authorization. Protect exposed data with least-privilege grants, RLS, and server-side checks. Never embed Supabase secret/service-role keys or Gemini API keys.
+- [M] Supabase session tokens remain under Supabase SDK session persistence. Store app-owned credentials only when genuinely required and use platform secure storage. Secure storage reduces exposure at rest; it does not make data safe on a compromised/unlocked device or replace authorization.
+- [M] Clear user-scoped caches, files, providers, subscriptions, and in-memory state on sign-out/account switch. Prevent previous-account data from flashing during the next account's bootstrap.
+- [M] Redact authorization headers, cookies, tokens, passwords, API keys, session IDs, prompts, personal data, signed URLs, and sensitive payloads from logs. Use request IDs and safe event categories instead. Test the redaction layer.
+- [C] Protect sensitive screens from task-switcher previews, screenshots, clipboard exposure, and notification previews when the product's data classification requires it. Apply platform controls narrowly; do not block screenshots globally without a product/security reason.
+- [C] Biometric checks are a local device-user-presence gate, not proof of server identity or permission. Root/jailbreak detection, app attestation, and anti-tampering are conditional defense-in-depth controls; never rely on them instead of server authorization.
+
+### Network and platform security
+
+- [M] Use HTTPS for every production endpoint. Reject invalid certificates; never install permissive certificate callbacks or disable hostname validation. Any debug-only cleartext exception must be scoped to explicit development hosts and absent from release variants.
+- [M] Validate deep links and Android intents as untrusted external input. Explicitly review exported Android components, intent filters, content providers, URL schemes, Associated Domains, and custom URL handlers. Expose only what the product needs.
+- [M] Android: review manifest permissions, exported components, backup/data-extraction rules, network security config, WebView use (if any), and R8/minification in a release artifact. Exclude secrets and sensitive app data from backups where appropriate; decide recovery behavior deliberately.
+- [M] iOS: verify accurate usage descriptions, entitlements, Keychain accessibility, Associated Domains, and the app's `PrivacyInfo.xcprivacy` manifest. Review required-reason API declarations and privacy manifests/signatures for all included third-party SDKs against Apple's current required SDK list. Invalid manifests can block submission.
+- [M] Ask for permissions in context, only when needed. Provide a useful denied/restricted path and a manual alternative where possible; do not repeatedly prompt after denial.
+- [C] Certificate pinning, biometric-gated sensitive actions, device attestation, and anti-tampering require a documented threat-based decision, recovery/rotation plan, and false-positive handling.
+
+### Dependency and CI supply-chain security
+
+- [M] Review direct and transitive dependencies for purpose, maintenance, license, SDK compatibility, advisories, and unnecessary platform permissions before adoption and at release. `flutter pub outdated` reports version status; it is not a vulnerability scanner.
+- [M] Commit the app's `pubspec.lock`; keep local and CI Flutter SDK versions aligned. Use reproducible dependency resolution and review lockfile changes rather than accepting unexplained transitive upgrades.
+- [M] GitHub Actions: grant the workflow/job only the `GITHUB_TOKEN` permissions it needs; pin third-party actions to verified full commit SHAs; protect production environments and require approval for production deployment/migrations.
+- [M] Never expose production secrets to untrusted fork pull requests or untrusted code. Do not check out and execute untrusted PR code in a privileged `pull_request_target` workflow. Use OIDC/short-lived credentials where the target service supports it; never print secrets or upload them in build artifacts.
+- [M] Run secret scanning and dependency/security checks in CI where available; treat any exposed credential as compromised: revoke/rotate it, inspect usage, remove the source, and review Git history/artifacts. Deleting the visible line alone is not remediation.
+
+### Privacy and store obligations
+
+- [M] Keep privacy disclosures, consent, retention, deletion, analytics/diagnostics, AI-provider sharing, App Store privacy answers, and Google Play Data safety answers aligned with actual runtime behavior and all third-party SDKs.
+- [M] If accounts can be created, implement in-app account deletion and define deletion of related database rows, Storage objects, and provider-held data where applicable. Do not assume deleting an Auth user cascades through every system.
+- [M] Verify current Google Play and Apple submission rules, target SDK/Xcode requirements, required SDK manifests/signatures, and permission declarations at each release. Do not rely on a date or requirement copied from an old project.
+- [M] Security testing must include negative authorization cases, malformed/oversized input, session expiry/revocation behavior, secret/log scans, and release-artifact review. Add platform/penetration tests according to the chosen risk profile.
 
 ## Dependencies and upgrades
 
@@ -102,7 +153,16 @@ Upgrade policy: upgrade deliberately in a dedicated change (SDK first, then pack
 
 ## CI/CD
 
-GitHub Actions: every PR runs format check, analyze, tests (goldens on one runner OS), and Android debug/release build; iOS build on macOS runner when signing is configured. Pin Flutter version (same as `pubspec.yaml`), pin third-party actions by version/SHA, cache pub, upload test/build artifacts. Release workflow: tag-triggered, builds signed artifacts from secrets, never prints secrets, requires manual approval to publish. Verify workflow syntax against current GitHub docs. Local YAML validation is not a real GitHub Actions run.
+GitHub Actions should make routine checks repeatable without giving every workflow production access.
+
+- Every PR runs format check, analyze, unit/widget tests, architecture/localization checks, and an Android build. Run golden tests on one controlled runner OS. Run iOS build/tests on a macOS runner when the toolchain is configured.
+- Pin the Flutter SDK to the project's `.fvmrc` version and use the same SDK in local development and CI. Pin third-party actions to verified full commit SHAs, not mutable tags alone; review updates deliberately.
+- Set least-privilege workflow/job `permissions` explicitly (read-only by default); grant write/deploy permissions only to the job that needs them.
+- Do not pass secrets to fork PRs or untrusted code. Avoid privileged `pull_request_target` workflows that execute PR-controlled code. Keep signing/deployment secrets in protected GitHub Environments; require approval for production deploys and migrations.
+- Prefer OIDC/short-lived credentials when supported by the destination service. Masking is not a substitute for not printing, persisting, or uploading secrets.
+- Cache pub dependencies safely; do not share writable caches from untrusted jobs with privileged release jobs. Retain and restrict access to build artifacts and symbol files.
+- Release workflow: protected tag/release trigger, production flavor, signed artifacts from secrets, no debug/test credentials or verbose logging, and a manual approval gate before publication. Keep crash-symbol files private and retrievable for the exact release.
+- Validate workflow syntax and permissions; a local YAML parse is not a GitHub Actions run. Report actual workflow run IDs/results when available.
 
 ## Device matrix
 
@@ -134,12 +194,27 @@ A gate passes only when each applicable item is observed, not assumed.
 - [M] Import-boundary test passes; one owner per state; no parallel implementations.
 - [M] Shared code contains no product-specific values; ADRs exist for deviations.
 
+### Security Gate
+
+- [M] Feature threat model and data classification exist for every sensitive or externally callable flow; trust boundaries and abuse cases are addressed.
+- [M] Server-side object authorization and negative tests pass; client route/UI checks are not counted as security controls.
+- [M] Secrets scan, log-redaction checks, dependency review, and release-artifact review show no exposed credentials or sensitive payloads.
+- [M] Applicable Supabase grants/RLS, Edge Function auth/abuse controls, and Storage permissions pass backend tests.
+- [M] Android/iOS manifests, permissions, exported surfaces, backup behavior, privacy declarations, and included SDK requirements are reviewed for the actual release build.
+- [M] Selected OWASP MASVS risk profile is addressed or deviations are recorded with owner and reason; no certification claim is made.
+
+### Performance Gate
+
+- [M] Each critical journey has a measurable `PERF-*` budget with device, OS, build mode, refresh rate, scenario, dataset, network conditions, metric, percentile, and threshold.
+- [M] Profile-mode measurements on the lowest supported physical device are recorded; higher-refresh targets are tested where relevant.
+- [M] Frame jank/UI/raster timing, cold/warm startup, memory behavior, and release artifact size are measured; energy/background behavior is measured when the product uses ongoing background work.
+- [M] Results are compared with the previous baseline. Regressions beyond the approved budget are fixed or explicitly accepted and recorded; unmeasured performance is marked Not verified.
+
 ### Application Gate
 
 - [M] Traceability table has no Not Started/In Progress/Failed/Blocked items without explicit user sign-off.
 - [M] Critical journeys pass as integration tests on at least one Android and one iOS target, or are reported not verified with reason.
-- [M] Performance measured in profile/release on device against `PERF-*`, or reported not measured.
-- [M] Security checklist, device matrix, dependency audit complete; items needing legal/security review listed.
+- [M] Device matrix and release-specific dependency audit complete; items needing legal/security review listed.
 - [M] Supabase RLS/authorization tests and Edge Function authentication/abuse tests pass for applicable backend features, or are explicitly reported not verified with a reason.
 
 ### Release Gate
@@ -152,3 +227,15 @@ A gate passes only when each applicable item is observed, not assumed.
 - [M] Explicit user authorization before publication.
 
 Critical failures block completion. Unresolved high-risk items must be listed in the report.
+
+## Official references
+
+- Flutter performance best practices: https://docs.flutter.dev/perf/best-practices
+- Flutter performance profiling: https://docs.flutter.dev/perf/ui-performance
+- Flutter DevTools Performance view: https://docs.flutter.dev/tools/devtools/performance
+- Flutter app size analysis: https://docs.flutter.dev/perf/app-size
+- OWASP MASVS usage and risk-based profiles: https://mas.owasp.org/MASVS/03-Using_the_MASVS/
+- Android app security best practices: https://developer.android.com/privacy-and-security/security-best-practices
+- Google Play target API requirements: https://developer.android.com/google/play/requirements/target-sdk
+- Apple privacy manifests and SDK requirements: https://developer.apple.com/documentation/bundleresources/adding-a-privacy-manifest-to-your-app-or-third-party-sdk
+- GitHub Actions security: https://docs.github.com/en/actions/security-for-github-actions
