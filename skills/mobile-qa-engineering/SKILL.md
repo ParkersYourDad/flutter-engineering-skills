@@ -5,6 +5,14 @@ description: Independently verifies Flutter mobile products and features against
 
 # Mobile QA Engineering
 
+## Shared standards
+
+Use these repository-level documents as the single source of truth. Do not copy their checklists into this skill or create conflicting local variants:
+- [quality.md] (../../references/quality.md)
+- [pitfalls.md] (../../references/pitfalls.md)
+- [localization-accessibility.md] (../../references/localization-accessibility.md)
+- [backend-supabase.md] (../../references/backend-supabase.md)
+
 ## Mission
 
 Prove whether the product behaves as specified. QA is an independent verification function, not a rubber stamp for implementation.
