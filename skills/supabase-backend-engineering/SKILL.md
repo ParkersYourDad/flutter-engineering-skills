@@ -8,9 +8,9 @@ description: Designs, implements, and reviews Supabase/PostgreSQL backends for F
 ## Shared standards
 
 Use these repository-level documents as the single source of truth. Do not copy their checklists into this skill or create conflicting local variants:
-- [backend-supabase.md] (../../references/backend-supabase.md)
-- [quality.md] (../../references/quality.md)
-- [pitfalls.md] (../../references/pitfalls.md)
+- [backend-supabase.md](../../references/backend-supabase.md)
+- [quality.md](../../references/quality.md)
+- [pitfalls.md](../../references/pitfalls.md)
 
 ## Mission
 
