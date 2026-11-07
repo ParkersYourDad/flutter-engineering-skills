@@ -118,6 +118,17 @@ Verify the pinned `go_router` version/API on pub.dev.
 
 - One configured `Dio` in `core/network` only for non-Supabase HTTP integrations: base URL from config, explicit connect/send/receive timeouts, JSON headers, locale header (`Accept-Language`) from active locale. Supabase requests use `supabase_flutter`.
 - Interceptors: add service-specific authentication only when the external API requires it; never forward a Supabase session token to an unrelated host. Handle that service's 401 according to its own contract—do not sign the user out of Supabase merely because a third-party API returned 401. Retry only idempotent operations with bounded backoff/jitter; logging is debug-only and redacts authorization, cookies, tokens, and PII; map errors to `AppFailure`. Test interceptor ordering and retry behavior.
+- **Retry policy:** classify failures before retrying. Do not retry validation/client errors (ordinary 4xx), authorization failures, malformed responses, or cancellations. Consider transient connection failures/timeouts, HTTP 408, HTTP 429, and selected 5xx responses retryable only when the endpoint contract permits it. For 429 (and 503 when supplied), honor a valid `Retry-After` within the request's remaining deadline.
+- Use a small bounded attempt count and capped exponential backoff with **full random jitter**; inject the random source/clock in tests. Set a total elapsed-time deadline, not only a per-attempt timeout. Cancel pending delays and attempts when the request is cancelled or its owning provider is disposed. Ensure request bodies can be replayed before retrying.
+- Never automatically retry a non-idempotent write unless the server provides a documented idempotency contract and the same idempotency key is reused for every attempt. A client-generated key alone does not make a server operation idempotent. Avoid stacking retries in Dio, Riverpod provider retry, and repository code; assign one retry owner per operation and configure Riverpod provider retry deliberately.
+- Test retry classification, attempt limits, jitter bounds, `Retry-After`, deadline exhaustion, cancellation, body replay, idempotency, and that permanent failures are not retried. Logging is debug-only and redacts authorization, cookies, tokens, and PII; map errors to `AppFailure`.
+
+### Offline behavior is feature-specific
+
+- Decide explicitly per feature whether offline use is unsupported, read-only from a bounded/stale cache, or supports queued writes and later synchronization. State the freshness contract and what the user can do while offline.
+- **Offline-first is conditional**, not a default architecture. Introduce a local source of truth, durable write queue, synchronization, conflict resolution, and connectivity recovery only when product requirements demand them.
+- Do not treat a connectivity signal as proof that a host is reachable. The request result is authoritative. Handle reconnects without duplicate submissions; queued writes require idempotency and a defined conflict policy.
+- Test offline entry, stale-data labeling, failed/queued writes, process restart with queued work, reconnect, duplicate delivery, conflict resolution where applicable, and cancellation/account switching.
 - Cancel in-flight requests with `CancelToken` tied to provider disposal for screen-scoped work.
 - Parse large payloads off the UI thread (`Isolate.run`/`compute`) only when profiling shows the work is slow.
 - No certificate pinning unless required; it adds operational risk. If required, record an ADR including rotation plan.
