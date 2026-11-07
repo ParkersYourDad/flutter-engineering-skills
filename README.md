@@ -44,9 +44,9 @@ Flutter/Dart implementation remains owned by the root SKILL.md; specialist skill
 
 ## Validate the skill repository
 
-Run the dependency-free validator before merging skill changes:
+GitHub Actions runs the dependency-free validator on pushes and pull requests to main. Run the same check locally before submitting changes:
 
-    python scripts/validate_skills.py
+    python3 scripts/validate_skills.py
 
 It checks Agent Skills frontmatter, unique names, directory/name alignment, and local Markdown links. It validates repository structure only; it does not prove that an agent follows the instructions or that a generated app is correct.
 
