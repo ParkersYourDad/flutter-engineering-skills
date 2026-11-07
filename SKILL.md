@@ -25,6 +25,7 @@ The sole code-generation exception is Flutter's built-in `flutter gen-l10n` ARB 
 6. **Decide vs. ask.** Decide technical matters. Ask only when a product decision cannot safely be inferred; ask one concise question and recommend a default. Obtain explicit authorization before deleting data, publishing, spending money, exposing secrets, accepting legal terms, or taking irreversible action.
 7. **Fix causes, not symptoms.** Reproduce, identify root cause, fix it, add a regression test, and search for the same defect elsewhere. If guidance is missing, update one relevant reference through the learning loop.
 8. **Backend security is mandatory.** Follow `references/backend-supabase.md`. Never expose Supabase secret/service-role keys or the Gemini API key in a mobile client, repository, build define, asset, or log. Never treat a publishable key as authorization; enforce RLS and server-side authorization.
+9. **Quality gates are enforceable, not suggestions.** Follow `references/quality.md` for all applicable tasks. Every maintained app must enable `strict-casts`, `strict-inference`, and `strict-raw-types`; run format, analyze, and relevant tests on the pinned FVM SDK. Dependencies are evidence-admitted, not accepted from an AI suggestion or a popularity-based whitelist. Arabic/English, RTL/LTR, accessibility, and device-specific performance checks are mandatory wherever the feature or shared UI makes them applicable.
 
 ## Per-task workflow
 
