@@ -5,6 +5,12 @@ description: Defines and validates product problems, users, outcomes, scope, req
 
 # Product Discovery
 
+## Shared standards
+
+Use these repository-level documents as the single source of truth. Do not copy their checklists into this skill or create conflicting local variants:
+- [workflow.md] (../../references/workflow.md)
+- [team-operating-model.md] (../../references/team-operating-model.md)
+
 ## Mission
 
 Convert an idea into a clear, testable product brief. Reduce the risk of building the wrong thing. Do not design architecture or write implementation code.
