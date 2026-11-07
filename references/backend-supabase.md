@@ -188,6 +188,9 @@ As of 2026-11-07, Supabase has announced the v3 Flutter client as a breaking-cha
 
 ## Official references
 
+- OWASP ASVS 5.0 for backend/service security verification: https://asvs.owasp.org/
+- OWASP API Security Top 10: https://owasp.org/www-project-api-security/
+- OWASP SAMM secure-development governance: https://owaspsamm.org/model/
 - Supabase Flutter client and setup: https://supabase.com/docs/reference/dart/installing
 - Supabase Flutter quickstart: https://supabase.com/docs/guides/getting-started/quickstarts/flutter
 - Supabase API security and RLS: https://supabase.com/docs/guides/api/securing-your-api
