@@ -55,7 +55,7 @@ Identify the outcome, users, supported platforms, constraints, deadline, existin
 
 ### 2. Baseline inspection
 
-Inspect repository state, architecture, dependencies, tests, design system, backend contracts, CI, and known issues. Identify what already exists and must be preserved. Establish the baseline before modifications.
+Inspect repository state, architecture, dependencies, tests, design system, backend contracts, CI, and known issues. For an existing app, classify the current SDK/toolchain, state manager, router, backend, code generation, and conventions as healthy, debt, unsupported, or blocking. Identify what must be preserved and establish the baseline before modifications. The greenfield stack is not a migration mandate.
 
 ### 3. Plan and contracts
 
@@ -64,6 +64,7 @@ Create only the artifacts needed for the task:
 - UX flow and screen/state inventory when UI changes.
 - A completed `references/design-system-component-contract.md` for components intended for cross-feature/app reuse; omit it for screen-local widgets.
 - Architecture decision and dependency/data-flow contracts when system boundaries change.
+- For an existing app, a migration ADR and staged compatibility/rollback plan before changing a healthy established stack; no migration artifact is needed when existing conventions are preserved.
 - API/database/event contracts before parallel client/backend work.
 - Test, security, accessibility, and performance scope based on risk.
 
