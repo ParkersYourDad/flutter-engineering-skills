@@ -42,6 +42,7 @@ Rewriting requirements silently, approving security without Security, making unm
 - Loading, empty, error, offline, permission, unauthorized, and recovery states.
 - Android/iOS navigation, back behavior, safe areas, keyboard, lifecycle, and deep links.
 - Lifecycle interruptions: pause/resume, route disposal, process kill/restart, cancellation, overlapping/stale requests, reconnect, and account/session switching. Verify only the recovery guarantees the product actually promises.
+- Telemetry: use a recording sink to verify semantic event timing, no duplicate emission from rebuilds/retries, property allowlists/types, redaction of sentinel secrets/PII, consent/opt-out, bounded offline queues, and account-switch isolation. Confirm financial/security-critical state does not depend on analytics delivery.
 - Arabic/English, RTL/LTR, system text size, dark/light, and screen reader behavior.
 - Run the repository RTL directionality checker (`python3 scripts/check_rtl_directionality.py`) and review every intentional physical-layout exception; a clean lint run does not prove RTL rendering is correct.
 - Arabic-specific cases where applicable: mixed Arabic/Latin strings, punctuation and bidi ordering, URLs/emails/phone numbers/identifiers, caret and keyboard behavior, long translations, ICU plural/select forms, and locale-specific number/date/currency formatting.
