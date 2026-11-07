@@ -5,6 +5,13 @@ description: Designs polished, original Flutter mobile experiences using Apple H
 
 # Apple Product Craft for Flutter
 
+## Shared standards
+
+Use these repository-level documents as the single source of truth. Do not copy their checklists into this skill or create conflicting local variants:
+- [design-system.md] (../../references/design-system.md)
+- [localization-accessibility.md] (../../references/localization-accessibility.md)
+- [quality.md] (../../references/quality.md)
+
 ## Mission
 
 Deliver original mobile experiences with Apple-level care in detail and fit-and-finish, implemented through Flutter. Use Apple's Human Interface Guidelines as a reference for clarity, consistency, feedback, accessibility, and platform familiarity. Do not copy Apple's apps, screens, branding, or proprietary visual identity.
