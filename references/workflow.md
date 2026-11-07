@@ -13,7 +13,7 @@
 
 Match ceremony to risk. A one-line fix needs only the relevant inspect/implement/verify/report steps. A new feature or shared component needs the full workflow. A new project or shared foundation also needs an ADR first.
 
-Before any feature or shared code, answer in the plan (not in a new file): What exists already? What is intended behavior? Edge cases? Acceptance criteria? Platform differences? Backend data ownership and authorization? RLS impact? Migration/rollback? New dependencies (justify or drop)? For Gemini/AI features: data sent to the provider, user consent, quota/cost limits, abuse controls, and failure behavior?
+Before any feature or shared code, answer in the plan (not in a new file): What exists already? For an existing app, classify its current architecture, SDK/toolchain, state management, routing, backend, dependencies, code generation, tests, CI, and release setup as healthy, debt, unsupported, or blocking; state what must be preserved and what evidence justifies a change. What is intended behavior? Edge cases? Acceptance criteria? Platform differences? Backend data ownership and authorization? RLS impact? Migration/rollback? New dependencies (justify or drop)? For Gemini/AI features: data sent to the provider, user consent, quota/cost limits, abuse controls, and failure behavior?
 
 ## Requirements and traceability
 
@@ -30,7 +30,7 @@ Cross-cutting acceptance criteria every project inherits: gates in `quality.md`,
 
 ## Project docs (the only four)
 
-Create under `docs/` at project start; keep short; never duplicate content between them or into code comments.
+Create under `docs/` at project start; keep short; never duplicate content between them or into code comments. For an existing project, inspect and update its current documents rather than replacing them with a new template.
 
 1. **`PROJECT.md`:** product summary, fixed constraints, supported OS versions, folder map, links to code-level conventions, current status, Supabase project/environment identifiers (never secret values), enabled services, migration/deployment status, and Edge Function inventory.
 2. **`REQUIREMENTS.md`:** scope, out-of-scope, and traceability/acceptance table, including backend data access, RLS, retention, and AI usage requirements when applicable.
