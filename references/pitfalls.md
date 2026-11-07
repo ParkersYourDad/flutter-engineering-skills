@@ -115,6 +115,24 @@ Read when debugging, reviewing, or before declaring a feature done. Each row des
 | Heavy parsing/crypto on UI isolate | Profile CPU | Isolate.run; compare before/after |
 | Premature RepaintBoundary/caching | Profile first | Remove unproven optimization |
 
+## Supabase and Gemini backend
+
+| Mistake | Prevent / detect | Fix / prevent regression |
+|---|---|---|
+| Supabase secret/service-role key or Gemini key shipped in the app | Secret scan source, assets, build defines, CI artifacts and Git history | Revoke/rotate immediately; remove exposure and audit usage; never rely on obfuscation |
+| Treating publishable key as authorization | Review grants and RLS; test as anon, owner and non-owner | Restrict grants; write operation-specific RLS policies |
+| RLS enabled but policy only checks `authenticated` | Test cross-user and cross-tenant access | Add ownership/tenant predicate to every operation |
+| UPDATE policy has no `WITH CHECK` | Test changing `user_id`/tenant columns | Add matching `USING` and `WITH CHECK`; prevent ownership reassignment |
+| Edge Function trusts client-supplied user ID or decoded JWT claims | Derive identity from verified JWT; test forged IDs and expired tokens | Verify JWT and authorize resource server-side |
+| Gemini Edge Function is publicly callable without controls | Verify auth mode, JWT verification, quota and abuse tests | Require user auth unless a signed webhook is the caller; add atomic rate limits and quotas |
+| Gemini key is stored in a committed `.env` or printed in logs | `.gitignore`, secret scan, log review | Move to Supabase secret store; rotate exposed key |
+| Edge Function uses service-role for every query | Review client creation and DB calls | Use caller-scoped client/RLS; isolate privileged operations and filter by verified user ID |
+| Unbounded Gemini input/output or unrestricted model selection | Validate schema, body size, model allowlist, output/token limits, timeout and budget | Reject oversized requests; cap usage; add per-user quotas and provider cost alerts |
+| Raw prompts, PII, provider errors or secrets appear in logs | Redaction tests and log inspection | Minimize data; redact; return stable localized error codes |
+| Dashboard-only schema changes drift from migrations | Compare local migration history and remote schema | Create/review versioned migration and test reset/upgrade path |
+| Realtime subscriptions leak across accounts or outlive screens | Lifecycle and user-switch tests | Scope filters, remove channels on dispose/sign-out, clear user-scoped state |
+| Public Storage bucket exposes private uploads | Bucket/policy review and unauthenticated URL test | Private bucket + scoped policies + short-lived signed URLs |
+
 ## Security and privacy
 
 | Mistake | Prevent / detect | Fix / prevent regression |
