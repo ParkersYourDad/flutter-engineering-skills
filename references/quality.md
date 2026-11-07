@@ -21,7 +21,7 @@ fvm --version
 fvm flutter --version
 fvm dart format --output=none --set-exit-if-changed .
 fvm flutter analyze
-python3 scripts/check_rtl_directionality.py
+python3 scripts/check_rtl_directionality.py --root .  # vendor this checker from the skill repository into the app
 python3 scripts/validate_skills.py
 fvm flutter test
 fvm flutter test integration_test        # requires emulator/simulator/device
