@@ -12,6 +12,7 @@ A coordinated skill set for building high-quality Flutter/Dart Android and iOS p
 |---|---|
 | [Company Orchestrator](skills/company-orchestrator/SKILL.md) | Cross-team planning, task routing, dependencies, conflicts, and final readiness |
 | [Product Discovery](skills/product-discovery/SKILL.md) | User problem, evidence, scope, requirements, and acceptance criteria |
+| [Mobile Design Research](skills/mobile-design-research/SKILL.md) | Appllama-compatible reference research, category patterns, and design briefs for Flutter |
 | [Apple Product Craft](skills/apple-product-craft/SKILL.md) | UX/UI, Apple HIG-informed design, visual hierarchy, motion, and native-feeling interaction |
 | [Flutter Architecture](skills/flutter-architecture/SKILL.md) | Architecture, state ownership, boundaries, contracts, and ADRs |
 | [Supabase Backend Engineering](skills/supabase-backend-engineering/SKILL.md) | PostgreSQL, RLS, Auth, Storage, Realtime, Edge Functions, and Gemini |
@@ -31,10 +32,15 @@ Flutter/Dart implementation remains owned by the root SKILL.md; specialist skill
 - [Architecture](references/architecture.md) — project structure, layers, Riverpod, GoRouter, networking, storage, and configuration.
 - [Supabase Backend](references/backend-supabase.md) — database security, RLS, migrations, Auth, Storage, Realtime, Edge Functions, and Gemini.
 - [Design System](references/design-system.md) — first-party Flutter design system, components, states, and motion.
+- [Flutter UI Translation](references/flutter-ui-translation.md) — maps Expo/React Native design ideas to Flutter SDK and Dart equivalents; no Expo code is imported.
 - [Localization & Accessibility](references/localization-accessibility.md) — English/Arabic, RTL, formatting, and accessibility requirements.
 - [Pitfalls](references/pitfalls.md) — recurring errors, prevention, detection, and regression practices.
 - [Quality](references/quality.md) — tests, performance, security, CI/CD, production operations, and release gates.
 - [Workflow](references/workflow.md) — requirements, project docs, decision authority, reporting, and learning loop.
+
+## Optional Appllama research
+
+When the agent environment supports custom MCP servers, Appllama documents its MCP endpoint at https://mcp.appllama.io/mcp. Connect it through the target coding agent's supported MCP configuration. The MCP is optional: the Flutter research skill also works from user-provided references and other authorized sources. Check the account's current plan/credit allowance before conducting research.
 
 ## How to use
 
