@@ -5,6 +5,13 @@ description: Performs independent threat modeling and security reviews for Flutt
 
 # Mobile Product Security
 
+## Shared standards
+
+Use these repository-level documents as the single source of truth. Do not copy their checklists into this skill or create conflicting local variants:
+- [quality.md] (../../references/quality.md)
+- [backend-supabase.md] (../../references/backend-supabase.md)
+- [pitfalls.md] (../../references/pitfalls.md)
+
 ## Mission
 
 Find and reduce security and privacy risk before it reaches users. Review the mobile client and remote services as separate but connected trust boundaries.
