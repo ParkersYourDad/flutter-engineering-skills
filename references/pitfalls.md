@@ -109,6 +109,12 @@ Read when debugging, reviewing, or before declaring a feature done. Each row des
 | Mistake | Prevent / detect | Fix / prevent regression |
 |---|---|---|
 | Performance judged in debug/emulator | Profile on physical device | Re-measure; record environment |
+| Fixed 16 ms frame target applied to 90/120 Hz devices | Derive frame budget from actual refresh rate; inspect UI and raster timing separately | Re-baseline at the target refresh rate; update PERF acceptance |
+| First frame treated as usable startup | Measure cold/warm start through the first meaningful interactive action | Defer non-critical work safely; test on the lowest supported device |
+| Only warm animation runs are profiled | Include first-use/shader-heavy transitions and real user journeys | Profile cold and warmed paths; use supported renderer defaults |
+| Memory rise automatically labelled a leak (or ignored) | Compare repeated identical journeys after warm-up and normal GC; inspect retained objects | Identify retaining references/subscriptions/caches; add lifecycle regression test |
+| App size changes are not measured | Compare release-size reports and inspect the package/asset breakdown | Remove the actual dominant cost; keep before/after evidence |
+| Background polling or subscriptions continue when unused | Inspect app pause/resume, idle network, timers, and subscription ownership | Pause/cancel unneeded work; reconcile state on resume |
 | Whole screen rebuilds on one field change | select, smaller widgets, rebuild stats | Narrow watches; measure |
 | Long ListView uses children list/no keys | builder/slivers + stable keys | Convert; profile scrolling |
 | Full-size images decoded as thumbnails | cacheWidth/cacheHeight and suitable cache strategy | Resize at decode; memory check |
@@ -142,7 +148,14 @@ Read when debugging, reviewing, or before declaring a feature done. Each row des
 | Deep-link/server input trusted | Validate and parse all external input | Add validation + tests |
 | Full request/response logged in release | Debug-only redacting logger | Gate by build mode; test redaction |
 | Permissions requested at launch | Ask in context; denial path | Add rationale/denied/settings flows |
-| Missing iOS privacy manifest/usage strings | Release gate | Add accurate declarations and verify archive |
+| Missing iOS privacy manifest/usage strings | Release gate; inspect app and included SDK manifests/required-reason APIs | Add accurate declarations and verify the archived release bundle |
+| RLS policies exist but table grants or API exposure are too broad | Review effective grants and exposed schemas as well as policies | Revoke unnecessary grants; add least-privilege grants in a migration and test each operation |
+| Authorization is checked only in the UI or route redirect | Attempt direct API access with another user's object ID | Enforce object-level authorization server-side; add cross-user negative tests |
+| Backend fetches a client-supplied URL | Review all URL-fetching code and redirect behavior | Use explicit destination allowlists; block private/internal targets and unsafe redirects to prevent SSRF |
+| Upload trusts filename or client MIME type | Submit oversized files, spoofed extensions, and mismatched content types | Validate byte size and actual content server-side; reject unsupported formats |
+| Local biometric prompt is treated as backend authentication | Review server authorization paths separately from device unlock | Keep server-side identity/authorization checks; use biometrics only as a local gate |
+| Privileged CI workflow exposes secrets to fork PR code | Review workflow triggers, permissions, and secret contexts | Remove secret access from untrusted jobs; use protected environments and minimal token permissions |
+| A credential is removed from the latest commit but remains exposed | Scan Git history, logs, build artifacts, and package outputs | Revoke/rotate immediately, investigate usage, then remove historical exposure where possible |
 
 ## Dependencies, build and release
 
