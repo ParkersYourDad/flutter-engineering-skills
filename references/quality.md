@@ -64,6 +64,7 @@ Test behavior and requirements by risk. Do not chase coverage percentages or tes
 - **Data:** repository + fake HTTP adapter: success, timeout, 401 refresh, 5xx, malformed JSON, cancellation.
 - **Golden:** shared components and a few key screens only; generate on one CI platform (goldens differ across OSes), load real fonts, review diffs rather than regenerating blindly.
 - **Integration:** critical journeys only (first launch, auth if present, core flow, language/theme switch, offline recovery), deterministic data, no arbitrary sleep; use `pumpAndSettle` with care and explicit finders.
+- **Lifecycle/recovery:** test pause/resume, route disposal, cancellation reaching the request, overlapping requests where stale results could win, process restart for recoverable work, and sign-out/account switch. Verify no duplicate timer/subscription or replay under the wrong account.
 - **Architecture/localization tests:** import boundaries, ARB key parity, no hardcoded strings (see other references).
 - **Fakes over mocks:** hand-written fakes; use `mocktail` only for a real need recorded in decisions. `mockito` requires forbidden code generation. Inject clock, random, and connectivity for deterministic tests.
 - **Defect protocol:** reproduce → root cause → fix cause → regression test → rerun affected tests → full suite if shared code changed → search for same pattern elsewhere.
@@ -259,7 +260,7 @@ A gate passes only when each applicable item is observed, not assumed.
 - [M] Applicable screen states complete via `AsyncStateView`.
 - [M] Failure paths tested (network, validation, unauthorized); double-submit and rapid-navigation safe.
 - [M] Localized (`en`/`ar`), RTL verified, accessibility checks pass. For relevant Arabic journeys, include mixed-direction content, locale-sensitive number/date/currency formatting, and required ICU plural categories; report platform/device coverage rather than assuming a locale toggle proves correctness.
-- [M] Lifecycle verified: background/resume, rotation if allowed, process death for critical flows.
+- [M] Lifecycle verified for applicable flows: pause/background and resume, route/provider disposal, cancellation, stale-response ordering, account/session switch, and process death/restart for work the product promises to recover. State explicitly which scenarios are not applicable or not verified.
 - [M] Format, analyze, tests green; no new dependency without ADR.
 
 ### Existing Project Gate
