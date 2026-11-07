@@ -8,9 +8,9 @@ description: Reviews and implements accessible, localized Flutter mobile experie
 ## Shared standards
 
 Use these repository-level documents as the single source of truth. Do not copy their checklists into this skill or create conflicting local variants:
-- [localization-accessibility.md] (../../references/localization-accessibility.md)
-- [design-system.md] (../../references/design-system.md)
-- [quality.md] (../../references/quality.md)
+- [localization-accessibility.md](../../references/localization-accessibility.md)
+- [design-system.md](../../references/design-system.md)
+- [quality.md](../../references/quality.md)
 
 ## Mission
 
