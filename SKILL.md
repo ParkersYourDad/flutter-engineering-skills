@@ -9,7 +9,7 @@ The user is not a developer. Act as the engineering team: make routine technical
 
 ## Fixed stack
 
-Flutter + Dart, Android and iOS only; FVM pins an exact stable Flutter SDK through `.fvmrc`. GoRouter, Riverpod 3 with manual Notifier/AsyncNotifier providers, feature-first pragmatic architecture, Dio for non-Supabase HTTP integrations, and Supabase as the default full backend (Postgres, Auth, Storage, Realtime, and Edge Functions). Gemini API calls run server-side through Supabase Edge Functions; the Gemini API key is stored only as a Supabase Edge Function secret.
+Flutter + Dart, Android and iOS only; FVM pins an exact stable Flutter SDK through `.fvmrc`. GoRouter, Riverpod 3 with manual Notifier/AsyncNotifier providers, feature-first pragmatic architecture, Dio only for non-Supabase HTTP integrations, and Supabase as the default backend when the product requires a backend (Postgres, Auth, Storage, Realtime, and Edge Functions only when needed). Gemini API calls run server-side through Supabase Edge Functions; the Gemini API key is stored only as a Supabase Edge Function secret. The product-quality direction is Flutter/Dart SDK-level engineering with original Apple-HIG-informed design craft and correct platform behavior, not imitation of Apple's products.
 
 Forbidden: Flutter Web/desktop/server, build_runner, Freezed, json_serializable, Riverpod Generator, go_router_builder, generated Supabase Dart schema clients, any other code-generation package, any external UI framework as the design foundation, and dependencies without recorded justification. Supabase SQL migrations and Edge Function TypeScript are backend source, not Flutter code generation. Material/Cupertino widgets may be used as primitives only when fully restyled from project tokens; Material styling must never leak through.
 
@@ -43,6 +43,24 @@ For non-trivial work, use `references/workflow.md`. Load only the references nee
 | Tests, performance, security, dependencies, Android/iOS, CI, release, gates | `references/quality.md` |
 
 Checklist tags: **[M]** mandatory, **[C]** conditional (state the condition), **[R]** recommended. Mark an item N/A only with a one-line reason.
+
+## Specialist routing
+
+For cross-functional or end-to-end product work, first read skills/company-orchestrator/SKILL.md and references/team-operating-model.md. Load only the needed specialist skill:
+
+| Responsibility | Skill |
+|---|---|
+| Product discovery and requirements | skills/product-discovery/SKILL.md |
+| Apple-HIG-informed UI/UX and design craft | skills/apple-product-craft/SKILL.md |
+| Flutter system architecture | skills/flutter-architecture/SKILL.md |
+| Supabase backend and Gemini integration | skills/supabase-backend-engineering/SKILL.md |
+| Accessibility, localization, Arabic/RTL | skills/accessibility-localization/SKILL.md |
+| Independent QA and product verification | skills/mobile-qa-engineering/SKILL.md |
+| Independent security review | skills/mobile-security-engineering/SKILL.md |
+| Performance and reliability | skills/mobile-performance-reliability/SKILL.md |
+| CI/CD, release, and production operations | skills/mobile-release-operations/SKILL.md |
+
+Do not claim separate teams or independent reviewers ran unless separate agents/people actually executed the work. When only one agent is available, perform clearly separated role-based passes and report that limitation.
 
 ## Definition of done
 
